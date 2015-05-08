@@ -5,7 +5,7 @@ var app            =         express();
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/',function(req,res){
-  res.sendfile("index3.html");
+  res.sendFile(__dirname + '/index3.html');
 });
 
 app.post('/login',function(req,res){

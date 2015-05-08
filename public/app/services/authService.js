@@ -31,14 +31,15 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
     var _searchApi = function(searchtext) {
 
         //return $http.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4&cx=017135603890338635452:6y5bim-ajlo&q=' + searchtext + '&fields=items/title').then(function (results) {
-        return $http.post(serviceBase + 'api/items','"'+searchtext+'"').then(function (results) {
+        return $http.post(serviceBase + 'api/items','search='+ searchtext,{ headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' } }).then(function (results) {
             return results;
         });
     };
 
     var _searchGoogle = function(searchtext) {
 
-        return $http.post(serviceBase + 'api/items/google','"'+searchtext+'"').then(function (results) {
+        return $http.post(serviceBase + 'api/items/google',{search: searchtext},{ headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}).then(function (results) {
+            console.log(searchtext);
             return results;
         });
     };
@@ -53,7 +54,7 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
 
         var deferred = $q.defer();
 
-        $http.post(serviceBase + 'token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
+        $http.post(serviceBase + 'token', data).success(function (response) {
 
             if (loginData.useRefreshTokens) {
                 localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName, refreshToken: response.refresh_token, useRefreshTokens: true });
