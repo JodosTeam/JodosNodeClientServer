@@ -1,0 +1,82 @@
+﻿<h1>ניהול משתמשים</h1>
+
+<div class="row">
+    <div class="col-md-2">
+        &nbsp;
+    </div>
+    <div class="col-md-8">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>שם מתשמש</th>
+                    <th>שם פרטי</th>
+                    <th>שם משפחה    </th>
+                    <th>תפקידים</th>
+                    <th>תאריך יצירת משתמש</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-ng-repeat="user in users" data-ng-click="setCurrentUser(user)">
+                    <td>
+                        {{ user.UserName }}
+                    </td>
+                    <td>
+                        {{ user.firstName}}
+                    </td>
+                    <td>
+                        {{ user.lastName}}
+                    </td>
+                    <td>
+                        {{ user.Role}}
+                    </td>
+                    <td>
+                        {{ user.createDate }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a data-ng-click="addUserView()">הוספת משתמש</a>
+        <table class="table table-striped table-bordered" data-ng-show="isEdit">
+            <tbody>
+                <tr>
+                    <td>
+                        <form class="form-login" role="form">
+                            <h2 class="form-login-heading">עריכת משתמש</h2>
+                            <select class="select form-control" ng-model="currentUser.Role"
+                                    ng-options="role.Name as role.Value for role in roles"></select>
+                            <input type="text" class="form-control" placeholder="שם פרטי" data-ng-model="currentUser.firstName" required>
+                            <input type="text" class="form-control" placeholder="שם משפחה" data-ng-model="currentUser.lastName" required>
+
+                            <button class="btn btn-lg btn-info btn-block" type="submit" data-ng-click="updateUser()">שמור</button>
+
+                        </form>
+                    </td>
+                    <td style="padding:5px;">
+                        <button class="btn btn-lg btn-info btn-block" type="submit" data-ng-click="removeUser()">הסר משתמש</button>
+                        <div data-ng-hide="removeMessage == ''" class="alert alert-danger">
+                            {{removeMessage}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <form class="form-login" role="form" data-ng-show="isAdd">
+            <h2 class="form-login-heading">הוספת משתמש</h2>
+            <input type="text" class="form-control" placeholder="שם משתמש" data-ng-model="registration.userName" required autofocus>
+            <input type="password" class="form-control" placeholder="סיסמא" data-ng-model="registration.password" required>
+            <input type="password" class="form-control" placeholder="אישור סיסמא" data-ng-model="registration.confirmPassword" required>
+            <input type="text" class="form-control" placeholder="שם פרטי" data-ng-model="registration.firstName" required>
+            <input type="text" class="form-control" placeholder="שם משפחה" data-ng-model="registration.lastName" required>
+
+
+            <button class="btn btn-lg btn-info btn-block" type="submit" data-ng-click="signUp()">הוסף</button>
+            <div data-ng-hide="message == ''" data-ng-class="(savedSuccessfully) ? 'alert alert-success' : 'alert alert-danger'">
+                {{message}}
+            </div>
+        </form>
+    </div>
+    
+    <div class="col-md-2">
+        &nbsp;
+    </div>
+</div>
