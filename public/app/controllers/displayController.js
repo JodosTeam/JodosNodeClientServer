@@ -1,5 +1,5 @@
 'use strict';
-app.controller('displayController', ['$scope', '$location','$http', '$templateCache', 'authService','$rootScope' ,function ($scope, $location,$http ,$templateCache,authService,$rootScope) {
+app.controller('displayController', ['$scope', '$location','$http', '$templateCache', 'authService','$rootScope' ,'$cookies',function ($scope, $location,$http ,$templateCache,authService,$rootScope,$cookies) {
 
 
     $scope.searchtext = 'iphone';
@@ -8,7 +8,7 @@ app.controller('displayController', ['$scope', '$location','$http', '$templateCa
     $scope.testProduct = [];
     
     $scope.searchProduct = function(txt,price){
-      authService.searchGoogle(txt,price).then(function (results) {
+      authService.searchGoogle(txt,price,$cookies.JodosGuid).then(function (results) {
             $scope.testProduct = results.data;
              $rootScope.testRoot = results.data;
             $location.path('/display');

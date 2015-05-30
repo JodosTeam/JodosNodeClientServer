@@ -14,6 +14,11 @@ var googleSearch = new GoogleSearch({
   cx: '017135603890338635452:l5ri3atpm-y'
 });
 
+var context = require('rabbit.js').createContext('amqp://10.0.0.9');
+var push = context.socket('PUSH');
+
+
+
 
 var Ebay = require('ebay')
 
@@ -70,13 +75,27 @@ app.post('/api/items',function (req,res) {
 app.post('/api/items/google', function (req,res){
 
   var searchtext = req.body.searchtext;
-  console.log('gfdgdf' + searchtext);
+  var price = req.body.Price;
+  var guid = req.body.Guid;
+  console.log('text:' + searchtext + ' price:' + price);
 
   googleSearch1(searchtext,function(data){
     //console.log(data);
 
     res.header('Content-type','application/json');
     res.header('Charset','utf8');
+   
+    push.connect('TEST1', function() {              
+      data.items.forEach(function(item){
+      var obj = {};
+      obj.Url = item.link;
+      obj.Price = price;
+      obj.Token = guid;
+      push.write(JSON.stringify(obj));  
+    });
+      
+    });
+
     res.jsonp(data);
   });
 
@@ -91,7 +110,7 @@ function googleSearch1(searchtext, cb){
     num: 10,
     fields: "items/link"
   }, function(error, response) {
-    console.log(response);
+    
 
    return cb(response);
   });
