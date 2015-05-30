@@ -28,18 +28,24 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
 
     var url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4&cx=017135603890338635452:l5ri3atpm-y&fields=items/title,items/link,items/pagemap/offer&q=';
     
-    var _searchApi = function(searchtext) {
+    var _searchApi = function(searchtext,myGUID) {
 
         //return $http.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4&cx=017135603890338635452:6y5bim-ajlo&q=' + searchtext + '&fields=items/title').then(function (results) {
-        return $http.post(serviceBase + 'api/items','search='+ searchtext,{ headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' } }).then(function (results) {
+        return $http.post(serviceBase + 'api/items',{'searchtext':searchtext,'guid': myGUID}).then(function (results) {
             return results;
         });
     };
 
-    var _searchGoogle = function(searchtext) {
+    var _searchGoogle = function(searchtext,price) {
 
-        return $http.post(serviceBase + 'api/items/google',{search: searchtext},{ headers: { 'Content-Type': 'application/x-www-form-urlencoded' }}).then(function (results) {
-            console.log(searchtext);
+        return $http.post(serviceBase + 'api/items/google',{'searchtext':searchtext,'Price':price}).then(function (results) {
+            return results;
+        });
+    };
+
+    var _getGuid = function() {
+
+        return $http.post(serviceBase + 'api/items/guid').then(function (results) {
             return results;
         });
     };
@@ -54,7 +60,7 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
 
         var deferred = $q.defer();
 
-        $http.post(serviceBase + 'token', data).success(function (response) {
+        $http.post(serviceBase + 'token', data, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).success(function (response) {
 
             if (loginData.useRefreshTokens) {
                 localStorageService.set('authorizationData', { token: response.access_token, userName: loginData.userName, refreshToken: response.refresh_token, useRefreshTokens: true });
@@ -114,7 +120,8 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
     authServiceFactory.fillAuthData = _fillAuthData;
     authServiceFactory.authentication = _authentication;
     authServiceFactory.searchApi = _searchApi;
-    authServiceFactory.searchGoogle = _searchGoogle
+    authServiceFactory.searchGoogle = _searchGoogle;
+    authServiceFactory.getGuid = _getGuid;
     
     return authServiceFactory;
 }]);

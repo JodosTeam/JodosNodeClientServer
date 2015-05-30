@@ -4,6 +4,8 @@
   "description": "my first socket.io app",
   "dependencies": {
     "express": "latest",
-    "socket.io": "latest"
+    "socket.io": "latest",
+    "body-parser": "latest",
+	"guid": "latest"
   }
 }

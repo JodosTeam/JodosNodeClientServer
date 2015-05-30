@@ -1,5 +1,5 @@
 ﻿
-var app = angular.module('AngularAuthApp', ['ngRoute', 'LocalStorageModule', 'angular-loading-bar']);
+var app = angular.module('AngularAuthApp', ['ngRoute', 'LocalStorageModule', 'angular-loading-bar','ngCookies']);
 
 app.config(function ($routeProvider) {
 
@@ -22,6 +22,7 @@ app.config(function ($routeProvider) {
 app.constant('ngAuthSettings', {
     apiServiceBaseUri:
        'http://localhost:3000/',
+    //'http://ayevendanieln:2617/', //IIS
     clientId: 'ngAuthApp'
 });
 

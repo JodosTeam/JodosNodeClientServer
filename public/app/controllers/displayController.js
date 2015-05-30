@@ -7,8 +7,8 @@ app.controller('displayController', ['$scope', '$location','$http', '$templateCa
     $scope.testFun = $rootScope.testRoot;
     $scope.testProduct = [];
     
-    $scope.searchProduct = function(txt){
-      authService.searchGoogle(txt).then(function (results) {
+    $scope.searchProduct = function(txt,price){
+      authService.searchGoogle(txt,price).then(function (results) {
             $scope.testProduct = results.data;
              $rootScope.testRoot = results.data;
             $location.path('/display');
