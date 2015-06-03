@@ -4,36 +4,48 @@ var app = express();
 var http = require('http');
 var https = require('https');
 var server = http.Server(app);
-var io = require('socket.io')(server);
 var fs = require('fs');
 var path = require('path');
 var guid = require('guid');
+var Ebay = require('ebay');
+var context = require('rabbit.js').createContext('amqp://10.0.0.9');
+//var context = require('rabbit.js').createContext('amqp://owl.rmq.cloudamqp.com/yncidqyc');
+
+var push = context.socket('PUSH');
 var GoogleSearch = require('google-search');
 var googleSearch = new GoogleSearch({
   key: 'AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4',
   cx: '017135603890338635452:l5ri3atpm-y'
 });
 
-var context = require('rabbit.js').createContext('amqp://10.0.0.9');
-var push = context.socket('PUSH');
-
-
-
-
-var Ebay = require('ebay')
 
 var ebay = new Ebay({
   app_id: 'JODOS-TE-0e9b-4bbc-9101-1c79d952427c'
-})
+});
 
+var io = require('socket.io')(server);
+var socketGlobal = [];
+
+
+console.log('soekct  - ' + io);
+// WORKING WITH AMQC CLOUD
+//var amqp = require('amqp'); 
+//var connection = amqp.createConnection({url: "amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc"});
+
+//var q = connection.queue('my-queue', function (queue) {
+//  console.log('Queue ' + queue.name + ' is open');
+//});
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-//app.use(multer()); // for parsing multipart/form-data
+
+
+
+
+
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
-  console.log('user connected');
 });
 
 app.get('/search=:id', function (req, res) {
@@ -196,27 +208,31 @@ app.get('/endpoint', function(req, res){
   res.jsonp(obj)
 });
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-    console.log('he wrote msg');
-    console.log('message: ' + msg);
-  });
 
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
 
-  socket.on('lala1', function(msg){
-    console.log('user lala1');
-    io.emit('lala1', msg);
+io.on('connection', function (socket) {
+  socketGlobal.push(socket);
+  console.log('user connected - socket saved - ' + socket);
+
+  socket.on('disconnect', function (socket) {
+    socketGlobal.pop(socket);
+    console.log('user disconnected - socket removed.');
   });
 
 });
 
+app.get('/emit', function(req, res){
+  socketGlobal.forEach(function (entry) {
+      entry.emit('chat message', 'TEST');
+      console.log('send to socket');
+    });
+
+  res.end('emit clients');
+});
 
 
-app.listen(3000,function(){
+
+server.listen(3000,function(){
   console.log("Started on PORT 3000");
 })
 
