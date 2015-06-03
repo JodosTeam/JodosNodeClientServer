@@ -8,8 +8,8 @@ var fs = require('fs');
 var path = require('path');
 var guid = require('guid');
 var Ebay = require('ebay');
-var context = require('rabbit.js').createContext('amqp://10.0.0.9');
-//var context = require('rabbit.js').createContext('amqp://owl.rmq.cloudamqp.com/yncidqyc');
+//var context = require('rabbit.js').createContext('amqp://10.0.0.9');
+var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc');
 
 var push = context.socket('PUSH');
 var GoogleSearch = require('google-search');
@@ -27,21 +27,8 @@ var io = require('socket.io')(server);
 var socketGlobal = [];
 
 
-console.log('soekct  - ' + io);
-// WORKING WITH AMQC CLOUD
-//var amqp = require('amqp'); 
-//var connection = amqp.createConnection({url: "amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc"});
-
-//var q = connection.queue('my-queue', function (queue) {
-//  console.log('Queue ' + queue.name + ' is open');
-//});
-
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
-
-
-
-
 
 
 app.get('/', function(req, res){
@@ -77,9 +64,9 @@ app.post('/api/items',function (req,res) {
   res.header('Charset','utf8');
 
 
- ebaySearch(resDani.searchtext,function(data){
+  ebaySearch(resDani.searchtext,function(data){
  // console.log(data);
-  res.jsonp(data);
+ res.jsonp(data);
 });
 
 });
@@ -96,15 +83,15 @@ app.post('/api/items/google', function (req,res){
 
     res.header('Content-type','application/json');
     res.header('Charset','utf8');
-   
+
     push.connect('TEST1', function() {              
       data.items.forEach(function(item){
-      var obj = {};
-      obj.Url = item.link;
-      obj.Price = price;
-      obj.Token = guid;
-      push.write(JSON.stringify(obj));  
-    });
+        var obj = {};
+        obj.Url = item.link;
+        obj.Price = price;
+        obj.Token = guid;
+        push.write(JSON.stringify(obj));  
+      });
       
     });
 
@@ -122,10 +109,10 @@ function googleSearch1(searchtext, cb){
     num: 10,
     fields: "items/link"
   }, function(error, response) {
-    
+
 
    return cb(response);
-  });
+ });
 }
 
 function ebaySearch(searchtext, cb){
@@ -181,18 +168,6 @@ app.get('/getebay', function (req, res) {
   });
 
 
-
-/*
-app.post('/login',function (req,res){
-  var user_name=req.body.user;
-  var password=req.body.password;
-
-  console.log("search: " + req.body.search);
-  console.log("User name = "+user_name+", password is "+password);
-
-  res.end("yes");
-});*/
-
 app.get('/endpoint', function(req, res){
   var obj = {};
   obj.title = 'koko';
@@ -222,12 +197,13 @@ io.on('connection', function (socket) {
 });
 
 app.get('/emit', function(req, res){
+  console.log('num of online clients - '+socketGlobal.length);
   socketGlobal.forEach(function (entry) {
-      entry.emit('chat message', 'TEST');
-      console.log('send to socket');
-    });
+    entry.emit('chat message', [{Name: 'fdsfs',ImageUrl:'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',ItemUrl: 'http://fdfs.com', ItemPrice: 4.4, ShippingPrice: 3.4, Source: 'Mantz'}]);
+    console.log('send to socket');
+  });
 
-  res.end('emit clients');
+  res.end('emit to clients - ' + socketGlobal.length);
 });
 
 
