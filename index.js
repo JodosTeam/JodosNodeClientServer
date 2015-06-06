@@ -87,7 +87,7 @@ app.post('/api/items/google', function(req, res) {
     //var allUrls = [];
     //var count = 0;
     for (var i = 0; i < numOfPages; i++) {
-        googleSearch1(searchtext,i*10, function(data) {
+        googleSearch1(searchtext, i * 10, function(data) {
             //console.log(data);
 
             res.header('Content-type', 'application/json');

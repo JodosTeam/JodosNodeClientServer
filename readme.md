@@ -8,5 +8,11 @@ add this to prefences > user setting
 
 
 CTRL+SHIFT+P
+
+add package control into your packages dir
+https://packagecontrol.io/Package%20Control.sublime-package
+
+
 add project from repos:
-https://github.com/victorporof/Sublime-HTMLPrettify
+- SublimeGit
+- HTML-CSS-JS Prettify
