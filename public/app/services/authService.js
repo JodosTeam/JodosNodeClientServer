@@ -36,9 +36,9 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
         });
     };
 
-    var _searchGoogle = function(searchtext,price,guid) {
+    var _searchGoogle = function(searchtext,price,imgUrl,guid) {
 
-        return $http.post(serviceBase + 'api/items/google',{'searchtext':searchtext,'Price':price,'Guid':guid}).then(function (results) {
+        return $http.post(serviceBase + 'api/items/google',{'searchtext':searchtext,'Price':price,'imgUrl':imgUrl,'Guid':guid}).then(function (results) {
             return results;
         });
     };

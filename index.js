@@ -17,6 +17,7 @@ var googleSearch = new GoogleSearch({
     key: 'AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4',
     cx: '017135603890338635452:l5ri3atpm-y'
 });
+var GoogleImageSearch = require('./google-image-search.js');
 
 
 var ebay = new Ebay({
@@ -76,38 +77,91 @@ app.post('/api/items', function(req, res) {
 app.post('/api/items/google', function(req, res) {
 
     var searchtext = req.body.searchtext;
+    var imgUrl = req.body.imgUrl;
     var price = req.body.Price;
     var guid = req.body.Guid;
-    console.log('text:' + searchtext + ' price:' + price);
+    console.log('text:' + searchtext + ' price:' + price + 'imgUrl: ' + imgUrl + ' Guid: ' + guid);
 
-    googleSearch1(searchtext, function(data) {
-        //console.log(data);
 
-        res.header('Content-type', 'application/json');
-        res.header('Charset', 'utf8');
+    var numOfPages = 4;
+    //var allUrls = [];
+    //var count = 0;
+    for (var i = 0; i < numOfPages; i++) {
+        googleSearch1(searchtext,i*10, function(data) {
+            //console.log(data);
 
-        push.connect('TEST1', function() {
-            data.items.forEach(function(item) {
+            res.header('Content-type', 'application/json');
+            res.header('Charset', 'utf8');
+
+            push.connect('TEST1', function() {
+                data.items.forEach(function(item) {
+                    var obj = {};
+                    obj.Url = item.link;
+                    obj.Price = price;
+                    obj.Token = guid;
+                    push.write(JSON.stringify(obj));
+                });
+            });
+            //res.jsonp(data);
+        });
+    }
+
+    //goot image search 
+
+    GoogleImageSearch.GetAllUrls(imgUrl, null, function(data) {
+        console.log('GetAllUrls');
+        console.log(data);
+        push.connect('TESTIMG2', function() {
+
+            data.forEach(function(item) {
                 var obj = {};
-                obj.Url = item.link;
+                obj.Url = item;
                 obj.Price = price;
                 obj.Token = guid;
                 push.write(JSON.stringify(obj));
             });
 
         });
-
-        res.jsonp(data);
     });
-
 });
 
 
 
-function googleSearch1(searchtext, cb) {
+function googleSearch22(searchtext, cb) {
+
+    var numOfPages = 4;
+    var allUrls = [];
+    var count = 0;
+
+    for (var i = 0; i < numOfPages; i++) {
+
+        googleSearch.build({
+            q: searchtext,
+            start: i * 10,
+            num: 10,
+            fields: "items/link"
+        }, function(error, response) {
+            console.log(response.items);
+
+
+            count++;
+            response.items.forEach(function(entity) {
+                allUrls.push(entity.link);
+                console.log('count=' + count + ' - ' + allUrls.length + '# - ' + entity.link);
+            });
+
+            if (count == numOfPages) {
+                return cb(allUrls);
+            }
+        });
+    }
+}
+
+function googleSearch1(searchtext, start, cb) {
 
     googleSearch.build({
         q: searchtext,
+        start: start,
         num: 10,
         fields: "items/link"
     }, function(error, response) {
