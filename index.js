@@ -269,11 +269,8 @@ app.get('/emit', function(req, res) {
     res.end('emit to clients - ' + socketGlobal.length);
 });
 
-
-
 server.listen(3000, function() {
     console.log("Started on PORT 3000");
 })
-
 
 app.use(express.static('public'));
