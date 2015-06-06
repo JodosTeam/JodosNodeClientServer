@@ -82,18 +82,18 @@ app.post('/api/items/google', function(req, res) {
     var guid = req.body.Guid;
     console.log('text:' + searchtext + ' price:' + price + 'imgUrl: ' + imgUrl + ' Guid: ' + guid);
 
+    push.connect('SELECTOR', function() {
+        var numOfPages = 4;
 
-    var numOfPages = 4;
-    //var allUrls = [];
-    //var count = 0;
-    for (var i = 0; i < numOfPages; i++) {
-        googleSearch1(searchtext, i * 10, function(data) {
-            //console.log(data);
+        //Google Search
+        for (var i = 0; i < numOfPages; i++) {
+            googleSearch1(searchtext, i * 10, function(data) {
+                console.log(data);
 
-            res.header('Content-type', 'application/json');
-            res.header('Charset', 'utf8');
+                res.header('Content-type', 'application/json');
+                res.header('Charset', 'utf8');
 
-            push.connect('TEST1', function() {
+                // push.connect('TEST1', function() {
                 data.items.forEach(function(item) {
                     var obj = {};
                     obj.Url = item.link;
@@ -103,16 +103,13 @@ app.post('/api/items/google', function(req, res) {
                 });
             });
             //res.jsonp(data);
-        });
-    }
+            //  });
+        }
 
-    //goot image search 
-
-    GoogleImageSearch.GetAllUrls(imgUrl, null, function(data) {
-        console.log('GetAllUrls');
-        console.log(data);
-        push.connect('TESTIMG2', function() {
-
+        //google image search 
+        GoogleImageSearch.GetAllUrls(imgUrl, null, function(data) {
+            //console.log('GoogleImageSearch.GetAllUrls - got '+ data.length);
+            // console.log(data);
             data.forEach(function(item) {
                 var obj = {};
                 obj.Url = item;
@@ -120,9 +117,9 @@ app.post('/api/items/google', function(req, res) {
                 obj.Token = guid;
                 push.write(JSON.stringify(obj));
             });
-
         });
     });
+    // push.close();
 });
 
 
