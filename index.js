@@ -14,13 +14,13 @@ var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4
 var push = context.socket('PUSH');
 var GoogleSearch = require('google-search');
 var googleSearch = new GoogleSearch({
-  key: 'AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4',
-  cx: '017135603890338635452:l5ri3atpm-y'
+    key: 'AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4',
+    cx: '017135603890338635452:l5ri3atpm-y'
 });
 
 
 var ebay = new Ebay({
-  app_id: 'JODOS-TE-0e9b-4bbc-9101-1c79d952427c'
+    app_id: 'JODOS-TE-0e9b-4bbc-9101-1c79d952427c'
 });
 
 var io = require('socket.io')(server);
@@ -28,192 +28,198 @@ var socketGlobal = [];
 
 
 app.use(bodyParser.json()); // for parsing application/json
-app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({
+    extended: true
+})); // for parsing application/x-www-form-urlencoded
 
 
-app.get('/', function(req, res){
-  res.sendFile(__dirname + '/index.html');
+app.get('/', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
 });
 
-app.get('/search=:id', function (req, res) {
-  var id = parseInt(req.params.id);
-  var searchText = 'iphone';
+app.get('/search=:id', function(req, res) {
+    var id = parseInt(req.params.id);
+    var searchText = 'iphone';
 
-  res.sendFile(__dirname + '/search.html');
+    res.sendFile(__dirname + '/search.html');
 });
 
-app.post('/api/items/guid', function(req, res){
-  //res.sendFile(__dirname + '/index1.html');
-  var myGUID = guid.raw();
-  console.log('genrate new guid - ' + myGUID);
+app.post('/api/items/guid', function(req, res) {
+    //res.sendFile(__dirname + '/index1.html');
+    var myGUID = guid.raw();
+    console.log('genrate new guid - ' + myGUID);
 
-  res.end(myGUID);
-
-});
-
-app.post('/api/items',function (req,res) {
-  //var searchText = req.body.searchtext;
-  //var guid = req.body.guid;
-
-  if (!req.body) 
-    return res.sendStatus(400)
-  
-  var resDani = req.body;
-
-  res.header('Content-type','application/json');
-  res.header('Charset','utf8');
-
-
-  ebaySearch(resDani.searchtext,function(data){
- // console.log(data);
- res.jsonp(data);
-});
+    res.end(myGUID);
 
 });
 
-app.post('/api/items/google', function (req,res){
+app.post('/api/items', function(req, res) {
+    //var searchText = req.body.searchtext;
+    //var guid = req.body.guid;
 
-  var searchtext = req.body.searchtext;
-  var price = req.body.Price;
-  var guid = req.body.Guid;
-  console.log('text:' + searchtext + ' price:' + price);
+    if (!req.body)
+        return res.sendStatus(400)
 
-  googleSearch1(searchtext,function(data){
-    //console.log(data);
+    var resDani = req.body;
 
-    res.header('Content-type','application/json');
-    res.header('Charset','utf8');
+    res.header('Content-type', 'application/json');
+    res.header('Charset', 'utf8');
 
-    push.connect('TEST1', function() {              
-      data.items.forEach(function(item){
-        var obj = {};
-        obj.Url = item.link;
-        obj.Price = price;
-        obj.Token = guid;
-        push.write(JSON.stringify(obj));  
-      });
-      
+
+    ebaySearch(resDani.searchtext, function(data) {
+        // console.log(data);
+        res.jsonp(data);
     });
 
-    res.jsonp(data);
-  });
+});
+
+app.post('/api/items/google', function(req, res) {
+
+    var searchtext = req.body.searchtext;
+    var price = req.body.Price;
+    var guid = req.body.Guid;
+    console.log('text:' + searchtext + ' price:' + price);
+
+    googleSearch1(searchtext, function(data) {
+        //console.log(data);
+
+        res.header('Content-type', 'application/json');
+        res.header('Charset', 'utf8');
+
+        push.connect('TEST1', function() {
+            data.items.forEach(function(item) {
+                var obj = {};
+                obj.Url = item.link;
+                obj.Price = price;
+                obj.Token = guid;
+                push.write(JSON.stringify(obj));
+            });
+
+        });
+
+        res.jsonp(data);
+    });
 
 });
 
 
 
-function googleSearch1(searchtext, cb){
+function googleSearch1(searchtext, cb) {
 
-  googleSearch.build({
-    q: searchtext,
-    num: 10,
-    fields: "items/link"
-  }, function(error, response) {
+    googleSearch.build({
+        q: searchtext,
+        num: 10,
+        fields: "items/link"
+    }, function(error, response) {
 
 
-   return cb(response);
- });
+        return cb(response);
+    });
 }
 
-function ebaySearch(searchtext, cb){
-  var myResult = [];
-  var params = {
-    'OPERATION-NAME': 'findItemsByKeywords'
-    , 'keywords': searchtext
-  }
+function ebaySearch(searchtext, cb) {
+    var myResult = [];
+    var params = {
+        'OPERATION-NAME': 'findItemsByKeywords',
+        'keywords': searchtext
+    }
 
-  ebay.get('finding', params, function (err, data) {
-    if(err) throw err
+    ebay.get('finding', params, function(err, data) {
+        if (err) throw err
 
 
-     var items = data.findItemsByKeywordsResponse[0].searchResult[0].item;
+        var items = data.findItemsByKeywordsResponse[0].searchResult[0].item;
 
-   
-   var curItem;
 
-   items.forEach(function (entity) {
-    curItem = {};
+        var curItem;
 
-    curItem.ItemUrl = entity.viewItemURL[0];
-    curItem.ImageUrl = entity.galleryURL[0];
-    curItem.ItemPrice =entity.sellingStatus[0].currentPrice[0].__value__;
-   // curItem.ShippingPrice = "0";
-   if(entity.shippingInfo[0].shippingServiceCost == undefined)
-    curItem.ShippingPrice = "0.0";
-  else
-    curItem.ShippingPrice = entity.shippingInfo[0].shippingServiceCost[0].__value__;  
-  curItem.Name = entity.title[0];
-  curItem.Source = "eBay";
+        items.forEach(function(entity) {
+            curItem = {};
 
-  myResult.push(curItem);
-});
+            curItem.ItemUrl = entity.viewItemURL[0];
+            curItem.ImageUrl = entity.galleryURL[0];
+            curItem.ItemPrice = entity.sellingStatus[0].currentPrice[0].__value__;
+            // curItem.ShippingPrice = "0";
+            if (entity.shippingInfo[0].shippingServiceCost == undefined)
+                curItem.ShippingPrice = "0.0";
+            else
+                curItem.ShippingPrice = entity.shippingInfo[0].shippingServiceCost[0].__value__;
+            curItem.Name = entity.title[0];
+            curItem.Source = "eBay";
 
-   return cb(myResult);
- });
+            myResult.push(curItem);
+        });
+
+        return cb(myResult);
+    });
 }
 
 
-app.get('/getebay', function (req, res) {
-  res.header('Content-type','application/json');
-  res.header('Charset','utf8');
+app.get('/getebay', function(req, res) {
+    res.header('Content-type', 'application/json');
+    res.header('Charset', 'utf8');
 
     //res.jsonp(ebaySearch('iphone',null));
 
-    ebaySearch('iphone',function(data){
-      console.log(data);
-      res.jsonp(data);
+    ebaySearch('iphone', function(data) {
+        console.log(data);
+        res.jsonp(data);
     });
 
 
-  });
+});
 
 
-app.get('/endpoint', function(req, res){
-  var obj = {};
-  obj.title = 'koko';
-  obj.data = 'mamama';
+app.get('/endpoint', function(req, res) {
+    var obj = {};
+    obj.title = 'koko';
+    obj.data = 'mamama';
 
-  console.log('params: ' + JSON.stringify(req.params));
-  console.log('body: ' + JSON.stringify(req.body));
-  console.log('query: ' + JSON.stringify(req.query));
+    console.log('params: ' + JSON.stringify(req.params));
+    console.log('body: ' + JSON.stringify(req.body));
+    console.log('query: ' + JSON.stringify(req.query));
 
-  res.header('Content-type','application/json');
-  res.header('Charset','utf8');
-  //res.send(req.query.callback + '('+ JSON.stringify(obj) + ');');
-  res.jsonp(obj)
+    res.header('Content-type', 'application/json');
+    res.header('Charset', 'utf8');
+    //res.send(req.query.callback + '('+ JSON.stringify(obj) + ');');
+    res.jsonp(obj)
 });
 
 
 
-io.on('connection', function (socket) {
-  socketGlobal.push(socket);
-  console.log('user connected - socket saved - ' + socket);
+io.on('connection', function(socket) {
+    socketGlobal.push(socket);
+    console.log('user connected - socket saved - ' + socket);
 
-  socket.on('disconnect', function (socket) {
-    socketGlobal.pop(socket);
-    console.log('user disconnected - socket removed.');
-  });
+    socket.on('disconnect', function(socket) {
+        socketGlobal.pop(socket);
+        console.log('user disconnected - socket removed.');
+    });
 
 });
 
-app.get('/emit', function(req, res){
-  console.log('num of online clients - '+socketGlobal.length);
-  socketGlobal.forEach(function (entry) {
-    entry.emit('chat message', [{Name: 'fdsfs',ImageUrl:'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',ItemUrl: 'http://fdfs.com', ItemPrice: 4.4, ShippingPrice: 3.4, Source: 'Mantz'}]);
-    console.log('send to socket');
-  });
+app.get('/emit', function(req, res) {
+    console.log('num of online clients - ' + socketGlobal.length);
+    socketGlobal.forEach(function(entry) {
+        entry.emit('chat message', [{
+            Name: 'fdsfs',
+            ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
+            ItemUrl: 'http://fdfs.com',
+            ItemPrice: 4.4,
+            ShippingPrice: 3.4,
+            Source: 'Mantz'
+        }]);
+        console.log('send to socket');
+    });
 
-  res.end('emit to clients - ' + socketGlobal.length);
+    res.end('emit to clients - ' + socketGlobal.length);
 });
 
 
 
-server.listen(3000,function(){
-  console.log("Started on PORT 3000");
+server.listen(3000, function() {
+    console.log("Started on PORT 3000");
 })
 
 
 app.use(express.static('public'));
-
-
-
