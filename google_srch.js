@@ -15,8 +15,8 @@ var arrString = [];
 var imageURL = 'http://www.av.co.il/_Uploads/dbsArticles/Clip(296).jpg';
 
 var cookieList = ['PREF=ID=19c8ba6de95b3db0:U=775371ba623dcb49:FF=0:TM=1433597553:LM=1433611642:S=xILoIYWl5cP1_O9E; NID=68=aYCxal_lvbEUDnPvyJONwvXQTRCnePJd3yCgb5povZKMBrtKAVoJwe2PFh5mYKrRw1hSx5D2P6Vt-aou-c99cqht79cxOw0lg94W8HF5jHMZF193eIcckS-7lQsx6at9; OGPC=5061590-1:; GOOGLE_ABUSE_EXEMPTION=ID=90326810a1e7ef4d:TM=1433612730:C=c:IP=31.154.91.58-:S=APGng0uuf3vUcUh6I7S98cSe0jGphPT8Ow',
-'PREF=ID=334423043880598a:U=4c9e02a3424abc93:FF=0:TM=1433596973:LM=1433597571:S=mXMPGnhkHkDX1jMx; NID=68=qcPj9nvpUIrhyoWsJcmuQCoGfDRMUN_MF67hz-zuj8gFYuhZCqJVC9eXvSXEdR6xIUO93RAkGDN4Kukx-8ZFCC6tLeQqFM2Z4KjJ-Rh6-ufa_cERS0ny--T2oYeN132zRywq',
-'PREF=ID=e885aea7c3f1f02a:U=ca2ab13369457c3c:FF=0:TM=1433597536:LM=1433613813:S=uFsgLcH00DQ43TQS; NID=68=NzoYoWAYhDJoipIAD7_SowN1PHyiOm0IKPH-O6d_qD0qOfmoWvc14dsvwr_bIVw1EZPvKGKbDq5V2ycqgUzYnHBt9XJ37hpzLDtwYiniHyh1ASVvv66p-NlS3ZmkJP5C; OGPC=5061590-1:; OGP=-5061590:'
+    'PREF=ID=334423043880598a:U=4c9e02a3424abc93:FF=0:TM=1433596973:LM=1433597571:S=mXMPGnhkHkDX1jMx; NID=68=qcPj9nvpUIrhyoWsJcmuQCoGfDRMUN_MF67hz-zuj8gFYuhZCqJVC9eXvSXEdR6xIUO93RAkGDN4Kukx-8ZFCC6tLeQqFM2Z4KjJ-Rh6-ufa_cERS0ny--T2oYeN132zRywq',
+    'PREF=ID=e885aea7c3f1f02a:U=ca2ab13369457c3c:FF=0:TM=1433597536:LM=1433613813:S=uFsgLcH00DQ43TQS; NID=68=NzoYoWAYhDJoipIAD7_SowN1PHyiOm0IKPH-O6d_qD0qOfmoWvc14dsvwr_bIVw1EZPvKGKbDq5V2ycqgUzYnHBt9XJ37hpzLDtwYiniHyh1ASVvv66p-NlS3ZmkJP5C; OGPC=5061590-1:; OGP=-5061590:'
 ];
 
 
@@ -25,8 +25,10 @@ app.get('/', function(req, res) {
 
 });
 
+//https://www.googleapis.com/customsearch/v1element?key=AIzaSyCVAXiUzRYsML1Pv6RwSG1gunmMikTzQqY&num=10&hl=he&start=20&cx=017135603890338635452:l5ri3atpm-y&q=iphone
+
 // TODO: complete the quert text searhch
-app.get('/pic', function(req, res) {
+app.get('/pic2', function(req, res) {
     var imgURL = req.query.img
     var q = req.query.q;
 
@@ -43,17 +45,17 @@ app.use(bodyParser.urlencoded({
     extended: false
 }));
 
-function randomIntInc (low, high) {
+function randomIntInc(low, high) {
     return Math.floor(Math.random() * (high - low + 1) + low);
 }
 
 exports.GetAllUrls = function(imageURL, q, cb) {
     console.log('HELLO');
     firstRequest(imageURL, q, function(googleURL) {
-       // console.log(googleURL);
+        // console.log(googleURL);
         secondRequest(googleURL, function(arrUrls) {
             //res.end(data1);
-        //    console.log("arrUrls(exports) " + arrUrls);
+            //    console.log("arrUrls(exports) " + arrUrls);
             return cb(arrUrls);
         });
     });
@@ -61,7 +63,7 @@ exports.GetAllUrls = function(imageURL, q, cb) {
 
 function GetAllUrls(imageURL, q, cb) {
     firstRequest(imageURL, q, function(googleURL) {
-       // console.log(googleURL);
+        // console.log(googleURL);
         secondRequest(googleURL, function(arrUrls) {
             //res.end(data1);
             //  console.log("arrUrls " + arrUrls);
@@ -76,10 +78,10 @@ function secondRequest(googleURL, cb) {
 
     for (var i = 0; i < numOfPages; i++) {
         urlPath = googleURL.substring(('https://www.google.co.il').length);
-   //     console.log(urlPath);
+        //     console.log(urlPath);
 
 
-        var cookieRand = randomIntInc(0,2);
+        var cookieRand = randomIntInc(0, 2);
         console.log('cookieRand: ' + cookieRand);
         var start = i * 10;
         var count = 0;
@@ -131,11 +133,11 @@ function secondRequest(googleURL, cb) {
                     var link = $(this);
                     var href = link.attr("href");
                     allGoogleUrls.push(href);
-              //      console.log('count=' + count + ' - ' + allGoogleUrls.length + '# - ' + href);
+                    //      console.log('count=' + count + ' - ' + allGoogleUrls.length + '# - ' + href);
 
                 });
 
-             //   console.log('count=' + count + '- numOfPages' + numOfPages);
+                //   console.log('count=' + count + '- numOfPages' + numOfPages);
                 if (count == numOfPages) {
                     return cb(allGoogleUrls);
                 }
@@ -284,3 +286,107 @@ GetAllUrls('http://thumbs2.ebaystatic.com/m/mRkVGL02tLgW7A86DtmFsoA/140.jpg', nu
     console.log('done.')
 });
 */
+
+
+//https://www.googleapis.com/customsearch/v1element?key=AIzaSyCVAXiUzRYsML1Pv6RwSG1gunmMikTzQqY&num=10&hl=he&start=20&cx=017135603890338635452:l5ri3atpm-y&q=iphone
+
+
+function myreq(searchtext, start, cb) {
+
+    var key = 'AIzaSyCVAXiUzRYsML1Pv6RwSG1gunmMikTzQqY';
+    var cx = '017135603890338635452:l5ri3atpm-y';
+    var num = 10;
+
+    var fullPath = '/customsearch/v1element?key=' + key + '&num=' + num + '&hl=en&start=' + start + '&cx=' + cx + '&q=' + searchtext;
+
+
+
+    var options = {
+        hostname: 'www.googleapis.com',
+        port: 443,
+        path: fullPath,
+        method: 'GET',
+        headers: {
+            'user-agent': 'Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/43.0.2357.124 Safari/537.36'
+        }
+    };
+
+    var data = '';
+
+    var req = https.request(options, function(res) {
+
+        res.on('data', function(d) {
+            data += d;
+        });
+
+        res.on('end', function() {
+
+
+            var koko = JSON.parse(data);
+            var listURLS = [];
+
+            if (koko.results) {
+                koko.results.forEach(function(item) {
+                    listURLS.push(item.url);
+
+                });
+            }
+
+            //return cb(data);
+            return cb(listURLS);
+        });
+        req.on('error', function(e) {
+
+            console.error('jfdsfsd' + e);
+        });
+
+    });
+
+
+    req.end('hello');
+
+    req.on('error', function(e) {
+        console.error(e);
+    });
+}
+
+
+
+
+
+
+function myreq2(searchtext, start, cb) {
+
+    var numOfPages = 9;
+    var count = 0;
+    var arr = [];
+
+
+    for (var i = 0; i < numOfPages; i++) {
+
+        myreq(searchtext, i * 10, function(data) {
+            count++;
+            //console.log(data);
+            if (data.length > 0) {
+                data.forEach(function(item) {
+                    arr.push(item);
+                });              
+            }
+
+            if (count == numOfPages) {
+                cb(arr);
+            }
+        });
+    }
+}
+
+app.get('/pic', function(req, res) {
+    myreq2('watch', 0, function(data){
+        res.jsonp(data);
+    });
+});
+
+
+server.listen(3000, function() {
+    console.log("Started on PORT 3000");
+})

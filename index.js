@@ -8,8 +8,8 @@ var fs = require('fs');
 var path = require('path');
 var guid = require('guid');
 var Ebay = require('ebay');
-var context = require('rabbit.js').createContext('amqp://localhost');
-//var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc');
+//var context = require('rabbit.js').createContext('amqp://localhost');
+var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc');
 
 var push = context.socket('PUSH');
 var pushImg = context.socket('PUSH');
@@ -185,7 +185,7 @@ function googleSearch1(searchtext, start, cb) {
         fields: "items/link"
     }, function(error, response) {
 
-
+        console.log(response);
         return cb(response);
     });
 }
