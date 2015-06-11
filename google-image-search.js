@@ -285,14 +285,6 @@ function firstRequest(imageURL, imageText, cb) {
 }
 
 /*
-server.listen(3000, function() {
-    console.log("Started on PORT 3000");
-});
-
-*/
-
-
-/*
 GetAllUrls('http://thumbs2.ebaystatic.com/m/mRkVGL02tLgW7A86DtmFsoA/140.jpg', null, function() {
     console.log('done.')
 });
