@@ -21,6 +21,7 @@ var googleSearch = new GoogleSearch({
     cx: '017135603890338635452:l5ri3atpm-y'
 });
 var GoogleImageSearch = require('./google-image-search.js');
+var Search = require('./google_search.js');
 
 
 var ebay = new Ebay({
@@ -90,7 +91,7 @@ app.post('/api/items/google', function(req, res) {
     //var allUrls = [];
     //var count = 0;
 
-    for (var i = 0; i < numOfPages; i++) {
+   /* for (var i = 0; i < numOfPages; i++) {
         googleSearch1(searchtext, i * 10, function(data) {
             //console.log(data);
 
@@ -108,7 +109,19 @@ app.post('/api/items/google', function(req, res) {
             });
             //res.jsonp(data);
         });
-    }
+    }*/
+
+    Search.getResultsFromGoogle(searchtext, 5, function(data) {
+        push.connect('TEST6', function() {
+            data.forEach(function(item) {
+                var obj = {};
+                obj.Url = item;
+                obj.Price = price;
+                obj.Token = guid;
+                push.write(JSON.stringify(obj));
+            });
+        });
+    });
 
     //goot image search 
 
@@ -130,7 +143,7 @@ app.post('/api/items/google', function(req, res) {
     });
 });
 
-function pullMessages() {
+/*function pullMessages() {
     console.log('in the pullMessages');
     pull.connect('FinalOUT');
 
@@ -143,7 +156,7 @@ function pullMessages() {
 
 }
 
-pullMessages();
+pullMessages();*/
 
 
 function googleSearch22(searchtext, cb) {
