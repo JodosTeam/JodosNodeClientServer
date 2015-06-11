@@ -8,8 +8,9 @@ var fs = require('fs');
 var path = require('path');
 var guid = require('guid');
 var Ebay = require('ebay');
-//var context = require('rabbit.js').createContext('amqp://localhost');
-var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc');
+var url = require('url');
+var context = require('rabbit.js').createContext('amqp://localhost');
+//var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc');
 
 var push = context.socket('PUSH');
 var pushImg = context.socket('PUSH');
@@ -91,36 +92,43 @@ app.post('/api/items/google', function(req, res) {
     //var allUrls = [];
     //var count = 0;
 
-   /* for (var i = 0; i < numOfPages; i++) {
-        googleSearch1(searchtext, i * 10, function(data) {
-            //console.log(data);
+    /* for (var i = 0; i < numOfPages; i++) {
+         googleSearch1(searchtext, i * 10, function(data) {
+             //console.log(data);
 
-            res.header('Content-type', 'application/json');
-            res.header('Charset', 'utf8');
+             res.header('Content-type', 'application/json');
+             res.header('Charset', 'utf8');
 
-            push.connect('TEST4', function() {
-                data.items.forEach(function(item) {
-                    var obj = {};
-                    obj.Url = item.link;
-                    obj.Price = price;
-                    obj.Token = guid;
-                    push.write(JSON.stringify(obj));
-                });
-            });
-            //res.jsonp(data);
-        });
-    }*/
+             push.connect('TEST4', function() {
+                 data.items.forEach(function(item) {
+                     var obj = {};
+                     obj.Url = item.link;
+                     obj.Price = price;
+                     obj.Token = guid;
+                     push.write(JSON.stringify(obj));
+                 });
+             });
+             //res.jsonp(data);
+         });
+     }*/
 
     Search.getResultsFromGoogle(searchtext, 5, function(data) {
-        push.connect('TEST6', function() {
+        push.connect('TEST1', function() {
             data.forEach(function(item) {
                 var obj = {};
                 obj.Url = item;
                 obj.Price = price;
                 obj.Token = guid;
                 push.write(JSON.stringify(obj));
+
+                fs.appendFile("SiteList1.txt", item + '\n', function(err) {
+                    if (err) return console.log(err);
+                    // console.log(result + ' >' + fileName);
+                });
             });
         });
+
+
     });
 
     //goot image search 
@@ -139,24 +147,45 @@ app.post('/api/items/google', function(req, res) {
                 pushImg.write(JSON.stringify(obj));
             });
 
+
         });
     });
 });
 
-/*function pullMessages() {
+function publishToSocket(obj) {
+
+    var domain = url.parse(obj.Url).host;
+
+    socketGlobal.forEach(function(entry) {
+        entry.emit('chat message', [{
+            Name: obj.isSellSite,
+            ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
+            ItemUrl: obj.Url,
+            ItemPrice: obj.predictMaxPrice,
+            ShippingPrice: obj.predictMinPrice,
+            Source: domain
+        }]);
+        console.log('send to socket');
+    });
+}
+
+
+function pullMessages() {
     console.log('in the pullMessages');
     pull.connect('FinalOUT');
 
     pull.on('data', function T(data) {
         var inMsg = JSON.parse(data);
         console.log('@@@@@@@@@@@@@@@@@@@@@');
-        console.log(inMsg.user);
+        console.log(inMsg);
+
+        publishToSocket(inMsg);
         //console.log(JSON.stringify(data));
     });
 
 }
 
-pullMessages();*/
+pullMessages();
 
 
 function googleSearch22(searchtext, cb) {
