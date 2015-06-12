@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-ng-app="AngularAuthApp" lang="en">
 
 <head>
 
@@ -33,7 +33,7 @@
 
 </head>
 
-<body id="page-top" class="index">
+<body id="page-top" class="index" ng-controller="homeController">
 
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -59,7 +59,7 @@
                         <a class="page-scroll" href="#results">Results</a>
                     </li>
                     <li>
-                        <a class="page-scroll" href="#link">link</a>
+                        <a class="page-scroll" href="#compare">compare</a>
                     </li>
                     <li>
                         <a class="page-scroll" href="#about">About</a>
@@ -82,145 +82,89 @@
         <div class="container">
             <div class="intro-text">
                 <div class="row">
-                    <input type="text" class="form-control" placeholder="Search a product on JODOS" id="searchbar" style="margin-top:140px">
+                    <input type="text" class="form-control" placeholder="Search a product on JODOS" id="searchbar" style="margin-top:140px" ng-model="searchtext" >
                 </div>
-                <a href="#results" class="page-scroll btn btn-xl" style="margin-top:40px">Search your product</a>
+                <a href="#results" class="page-scroll btn btn-xl" style="margin-top:40px" ng-click="searchApi()">Search your product</a>
             </div>
         </div>
     </header>
 
     <!-- Search Section -->
-    <section id="results">
+        <section id="results">
+
         <div class="container">
-            <div class="row">
+        <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="section-heading">Results</h2>
-                    <h3 class="section-subheading text-muted">All the search results</h3>
                 </div>
+        </div>
+     <!-- start header here-->
+        <div id="fdw-pricing-table">
+                <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testFun.length>0) && isSearchedApiEnabled">
+                <h1>מבצע השוואת מחירים</h1>
+                <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
+                </div>   
+                <a class="signup page-scroll" href="#compare" >JODOS it!</a>  
+            <div class="plan plan1" data-ng-repeat="item in testFun">
+            <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
+                <div class="header">{{ item.Name }}</div>
+                <div class="price">{{ item.ItemPrice }}$</div>
+                <ul>
+                    <a href="{{ item.ItemUrl }}">
+                    <img src="{{ item.ImageUrl }}"  width="150" height="150" />      
+                    </a>
+                </ul>
+                <a class="signup page-scroll" href="#compare" ng-click="searchProduct(item.Name,item.ItemPrice,item.ImageUrl,item.ItemUrl)">JODOS it!</a>            
             </div>
-            <div class="row text-center">
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-shopping-cart fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">E-Commerce</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-laptop fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Responsive Design</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
-                <div class="col-md-4">
-                    <span class="fa-stack fa-4x">
-                        <i class="fa fa-circle fa-stack-2x text-primary"></i>
-                        <i class="fa fa-lock fa-stack-1x fa-inverse"></i>
-                    </span>
-                    <h4 class="service-heading">Web Security</h4>
-                    <p class="text-muted">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Minima maxime quam architecto quo inventore harum ex magni, dicta impedit.</p>
-                </div>
-            </div>
+            
+           
+        </div>
         </div>
     </section>
 
     <!-- Portfolio Grid Section -->
-    <section id="link" class="bg-light-gray">
+    <section name="compare" id="compare" class="bg-light-gray">
         <div class="container">
-            <div class="row">
-                <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Link</h2>
-                    <h3 class="section-subheading text-muted">Each result that the user click on  it will apear here.</h3>
-                </div>
+        <!--the product to compare-->
+            <div class="row" ng-show="CurrentProduct.ImageUrl">
+                <table>
+                    <tr>
+                        <td>
+                            <img src="{{CurrentProduct.ImageUrl}}" href="{{CurrentProduct.ItemUrl}}" width="150" height="150" >
+                        </td>
+                        <td>
+                            <h2 class="section-heading">Compare</h2>
+                            <h3 class="text-muted">{{CurrentProduct.ItemName}}</h3>
+                            <h4 style="font-size:30px">{{CurrentProduct.ItemPrice}}$</h4>
+                        </td>
+                    </tr>
+                </table>
             </div>
+            <!-- the other product-->
+            <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testKoko.length>0) && isGoogleApiEnabled">
+                <h1>מבצע השוואת מחירים</h1>
+                <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
+                </div>   
+
             <div class="row">
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a href="#portfolioModal1" class="portfolio-link" data-toggle="modal">
-                        <div class="portfolio-hover">
-                            <div class="portfolio-hover-content">
-                                <i class="fa fa-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/roundicons.png" class="img-responsive" alt="">
-                    </a>
-                    <div class="portfolio-caption">
-                        <h4>Round Icons</h4>
-                        <p class="text-muted">Graphic Design</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a href="#portfolioModal2" class="portfolio-link" data-toggle="modal">
-                        <div class="portfolio-hover">
-                            <div class="portfolio-hover-content">
-                                <i class="fa fa-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/startup-framework.png" class="img-responsive" alt="">
-                    </a>
-                    <div class="portfolio-caption">
-                        <h4>Startup Framework</h4>
-                        <p class="text-muted">Website Design</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a href="#portfolioModal3" class="portfolio-link" data-toggle="modal">
-                        <div class="portfolio-hover">
-                            <div class="portfolio-hover-content">
-                                <i class="fa fa-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/treehouse.png" class="img-responsive" alt="">
-                    </a>
-                    <div class="portfolio-caption">
-                        <h4>Treehouse</h4>
-                        <p class="text-muted">Website Design</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a href="#portfolioModal4" class="portfolio-link" data-toggle="modal">
-                        <div class="portfolio-hover">
-                            <div class="portfolio-hover-content">
-                                <i class="fa fa-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/golden.png" class="img-responsive" alt="">
-                    </a>
-                    <div class="portfolio-caption">
-                        <h4>Golden</h4>
-                        <p class="text-muted">Website Design</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a href="#portfolioModal5" class="portfolio-link" data-toggle="modal">
-                        <div class="portfolio-hover">
-                            <div class="portfolio-hover-content">
-                                <i class="fa fa-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/escape.png" class="img-responsive" alt="">
-                    </a>
-                    <div class="portfolio-caption">
-                        <h4>Escape</h4>
-                        <p class="text-muted">Website Design</p>
-                    </div>
-                </div>
-                <div class="col-md-4 col-sm-6 portfolio-item">
-                    <a href="#portfolioModal6" class="portfolio-link" data-toggle="modal">
-                        <div class="portfolio-hover">
-                            <div class="portfolio-hover-content">
-                                <i class="fa fa-plus fa-3x"></i>
-                            </div>
-                        </div>
-                        <img src="img/portfolio/dreams.png" class="img-responsive" alt="">
-                    </a>
-                    <div class="portfolio-caption">
-                        <h4>Dreams</h4>
-                        <p class="text-muted">Website Design</p>
-                    </div>
-                </div>
+                <table>
+                    <tr data-ng-repeat="item in testKoko">
+                        <!--Cheeper or more expansive-->
+                        <td>
+                            <img  ng-if="item.Avg < CurrentProduct.ItemPrice" src="./img/searchresult/goodJodos.jpg" width="100" height="100" >
+                            <img  ng-if="item.Avg >= CurrentProduct.ItemPrice" src="./img/searchresult/badJodos.jpg" width="100" height="100" >
+                        </td>
+                        <td>
+                        <a href="{{ item.ItemUrl }}">
+                            <img src="{{ item.ImageUrl }}"  width="100" height="100" >
+                            </a>
+                        </td>
+                        <td>
+                            <h3 style="font-size:20px">{{ item.Name }}</h3>
+                            <h4 style="font-size:15px">{{ item.ItemPrice }}$</h4>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </section>
@@ -659,37 +603,37 @@
 
     <!-- Custom Theme JavaScript -->
     <script src="scripts/agency.js"></script>
-	
-	<!-- 3rd party libraries -->
+    
+    <!-- 3rd party libraries -->
 
-	<script src="scripts/angular.min.js"></script>
-	<script src="scripts/angular-route.min.js"></script>
-	<script src="scripts/angular-local-storage.min.js"></script>
-	<script src="scripts/angular-cookies.js"></script>
-	<script src="scripts/loading-bar.min.js"></script>
+    <script src="scripts/angular.min.js"></script>
+    <script src="scripts/angular-route.min.js"></script>
+    <script src="scripts/angular-local-storage.min.js"></script>
+    <script src="scripts/angular-cookies.js"></script>
+    <script src="scripts/loading-bar.min.js"></script>
 
-	<script src="scripts/moment-with-locales.js"></script>
-	<script src="scripts/raphael.min.js"></script>
-	<script src="scripts/morris.min.js"></script>
-	<script src="scripts/socket.io-1.2.0.js"></script>
-	<script src="scripts/massautocomplete.js"></script>
-	<!-- Load app main script -->
-	<script src="app/app.js"></script>
-	<!-- Load directives -->
-	<script src="app/directives/datetimepicker.js"></script>
-	<script src="app/directives/focusMe.js"></script>
+    <script src="scripts/moment-with-locales.js"></script>
+    <script src="scripts/raphael.min.js"></script>
+    <script src="scripts/morris.min.js"></script>
+    <script src="scripts/socket.io-1.2.0.js"></script>
+    <script src="scripts/massautocomplete.js"></script>
+    <!-- Load app main script -->
+    <script src="app/app.js"></script>
+    <!-- Load directives -->
+    <script src="app/directives/datetimepicker.js"></script>
+    <script src="app/directives/focusMe.js"></script>
 
-	<!-- Load services -->
-	<script src="app/services/authInterceptorService.js"></script>
-	<script src="app/services/authService.js"></script>
-	<script src="app/services/usersService.js"></script>
-	<script src="app/services/codeService.js"></script>
-	<script src="app/services/itemsService.js"></script>
-	<!-- Load controllers -->
-	<script src="app/controllers/indexController.js"></script>
-	<script src="app/controllers/homeController.js"></script>
-	<script src="app/controllers/usersController.js"></script>
-	<script src="app/controllers/displayController.js"></script>
+    <!-- Load services -->
+    <script src="app/services/authInterceptorService.js"></script>
+    <script src="app/services/authService.js"></script>
+    <script src="app/services/usersService.js"></script>
+    <script src="app/services/codeService.js"></script>
+    <script src="app/services/itemsService.js"></script>
+    <!-- Load controllers -->
+    <script src="app/controllers/indexController.js"></script>
+    <script src="app/controllers/homeController.js"></script>
+    <script src="app/controllers/usersController.js"></script>
+    <script src="app/controllers/displayController.js"></script>
 
 </body>
 

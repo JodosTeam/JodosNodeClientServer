@@ -9,7 +9,7 @@ var path = require('path');
 var guid = require('guid');
 var Ebay = require('ebay');
 var url = require('url');
-var context = require('rabbit.js').createContext('amqp://10.0.0.6');
+var context = require('rabbit.js').createContext('amqp://guest:guest@localhost');
 //var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc');
 
 var push = context.socket('PUSH');
@@ -113,6 +113,8 @@ app.post('/api/items/google', function(req, res) {
      }*/
 
     Search.getResultsFromGoogle(searchtext, 5, function(data) {
+        console.log('getResultsFromGoogle');
+        console.log(data);
         push.connect('TEST1', function() {
             data.forEach(function(item) {
                 var obj = {};
@@ -163,12 +165,12 @@ function publishToSocket(obj) {
 
     socketGlobal.forEach(function(entry) {
         entry.emit('chat message', [{
-            Name: obj.isSellSite,
+            Name: domain,
             ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
             ItemUrl: obj.Url,
-            ItemPrice: obj.predictMaxPrice,
-            ShippingPrice: obj.predictMinPrice,
-            Source: domain
+            ItemPrice: obj.predictMinPrice + " - " + obj.predictMaxPrice,
+            Avg: obj.predictMinPrice,
+            IsSellSite: obj.IsSellSite
         }]);
         console.log('send to socket');
     });

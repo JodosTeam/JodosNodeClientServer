@@ -1,7 +1,6 @@
 'use strict';
 app.controller('displayController', ['$scope', '$location','$http', '$templateCache', 'authService','$rootScope' ,'$cookies',function ($scope, $location,$http ,$templateCache,authService,$rootScope,$cookies) {
 
-
     var test = [];
 
     $scope.searchtext = 'iphone';
