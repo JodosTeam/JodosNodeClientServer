@@ -173,9 +173,10 @@ function publishToSocket(obj) {
 
         socket.emit('chat message', [{
             Name: domain,
-            ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
+            // ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
             ItemUrl: obj.Url,
-            ItemPrice: obj.predictMinPrice + " - " + obj.predictMaxPrice,
+            ItemMinPrice: obj.predictMinPrice,
+            ItemMaxPrice: obj.predictMaxPrice,
             Avg: obj.predictMinPrice,
             isSellSite: obj.isSellSite
         }]);
@@ -244,7 +245,7 @@ function googleSearch1(searchtext, start, cb) {
         fields: "items/link"
     }, function(error, response) {
 
-       //console.log(response);
+        //console.log(response);
         return cb(response);
     });
 }
@@ -299,7 +300,7 @@ app.get('/getebay', function(req, res) {
     //res.jsonp(ebaySearch('iphone',null));
 
     ebaySearch('iphone', function(data) {
-       // console.log(data);
+        // console.log(data);
         res.jsonp(data);
     });
 
@@ -369,7 +370,7 @@ io.on('connection', function(socket) {
             console.log('old GUIDD was - ' + mySearch.guid);
             console.log(Object.keys(socketGlobal).length);
             //  socketGlobal.pop(mySearch.guid);
-           // delete socketGlobal[mySearch.guid];
+            // delete socketGlobal[mySearch.guid];
             console.log(Object.keys(socketGlobal).length);
             console.log(Object.keys(socketGlobal));
 
@@ -420,9 +421,12 @@ app.get('/emit', function(req, res) {
 });
 
 app.get('/status', function(req, res) {
-    res.jsonp(Object.values(socketGlobal));
-    console.log(Object.keys(socketGlobal));
-    //res.end();
+
+    /*if (socketGlobal != undefined) {
+
+        res.jsonp(Object.values(socketGlobal));
+        console.log(Object.keys(socketGlobal));
+    }*/
 });
 
 server.listen(3000, function() {

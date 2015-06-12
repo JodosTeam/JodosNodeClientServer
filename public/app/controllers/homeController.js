@@ -33,6 +33,7 @@
 
                   //$rootScope.testRoot = results.data;
                   $scope.testFun = results.data;
+                  console.log($scope.testFun);
 
               },
               function(err) {
@@ -92,4 +93,18 @@
 
           //  $scope.$apply();
       });
+
+
+
+
+
+    $(document).keypress(function(e) {
+        if (e.which == 13) {
+            //alert($("#searchbar")[0].searchtext);
+            console.log($("#searchbar")[0].value);
+            $scope.searchApi();
+        }
+    });
+ 
+
   }]);
