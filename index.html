@@ -95,7 +95,7 @@
         <div class="container">
         <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">Results</h2>
+                    <img src="./img/titels/results.png" style="height: 200px;width: 800px;">
                 </div>
         </div>
      <!-- start header here-->
@@ -106,7 +106,7 @@
                 </div>   
             <div class="plan plan1" data-ng-repeat="item in testFun">
             <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
-                <div class="header">{{ item.Name }}</div>
+                <div class="header" style="width: 180px;height: 180px;padding:20px;margin:1px">{{ item.Name }}</div>
                 <div class="price">{{ item.ItemPrice }}$</div>
                 <ul>
                     <a href="{{ item.ItemUrl }}">
@@ -132,7 +132,9 @@
                             <img src="{{CurrentProduct.ImageUrl}}" href="{{CurrentProduct.ItemUrl}}" width="150" height="150" >
                         </td>
                         <td>
-                            <h2 class="section-heading">Compare</h2>
+                               <div class="col-lg-12 text-center">
+                    <img src="./img/titels/compare.png" style="height: 200px;width: 800px;">
+                </div>
                             <h3 class="text-muted">{{CurrentProduct.ItemName}}</h3>
                             <h4 style="font-size:30px">{{CurrentProduct.ItemPrice}}$</h4>
                         </td>
@@ -171,7 +173,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-lg-12 text-center">
-                    <h2 class="section-heading">About</h2>
+                    <img src="./img/titels/about.png" style="height: 200px;width: 800px;">
                     <h3 class="section-subheading text-muted">How the dream became a reality</h3>
                 </div>
             </div>

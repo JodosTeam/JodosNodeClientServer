@@ -892,12 +892,10 @@ body {
         background: #fff;      
         border: 1px solid #ddd;
         color: #333;
-        padding: 20px;
-        width: 180px;
+        margin: 5px 1px 15px 5px;
         float: left;
         _display: inline; /* IE6 double margin fix */
         position: relative;
-        margin: 0 5px;
         -moz-box-shadow: 0 2px 2px -1px rgba(0,0,0,.3);
         -webkit-box-shadow: 0 2px 2px -1px rgba(0,0,0,.3);
         box-shadow: 0 2px 2px -1px rgba(0,0,0,.3);      
