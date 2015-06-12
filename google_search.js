@@ -52,8 +52,8 @@ function getPageFromGoogle(searchtext, start, cb) {
             var koko = JSON.parse(data);
             var listURLS = [];
 
-            console.log('https://www.googleapis.com'+urlFormatted);
-            console.log(koko);
+            console.log('https://www.googleapis.com' + urlFormatted);
+            //console.log(koko);
 
             if (koko.results) {
                 koko.results.forEach(function(item) {
@@ -77,7 +77,7 @@ function getPageFromGoogle(searchtext, start, cb) {
     });
 }
 
-exports.getResultsFromGoogle = function (searchtext, numOfPages, cb) {
+exports.getResultsFromGoogle = function(searchtext, numOfPages, cb) {
     var count = 0;
     var arr = [];
     var MAX_REQUESTS = 10;

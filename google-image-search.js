@@ -122,9 +122,9 @@ function secondRequest(googleURL, cb) {
                 count++;
                 $ = cheerio.load(myHTML);
 
-                fs.appendFile("googlesearch" + count + ".html", myHTML, function(err) {
-                    if (err) return console.log(err);
-                });
+                /* fs.appendFile("googlesearch" + count + ".html", myHTML, function(err) {
+                     if (err) return console.log(err);
+                 });*/
 
                 // Fill result links
                 $("li > div > h3 > a[href]").each(function() {
@@ -289,4 +289,3 @@ GetAllUrls('http://thumbs2.ebaystatic.com/m/mRkVGL02tLgW7A86DtmFsoA/140.jpg', nu
     console.log('done.')
 });
 */
-

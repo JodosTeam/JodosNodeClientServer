@@ -66,13 +66,16 @@ app.post('/api/items', function(req, res) {
     if (!req.body)
         return res.sendStatus(400)
 
-    var resDani = req.body;
+    //var ebayText = escape(req.body.searchtext);
+    var ebayText = unescape(req.body.searchtext).trim();
+
 
     res.header('Content-type', 'application/json');
     res.header('Charset', 'utf8');
 
+    console.log('SearchTExt - ' + ebayText);
 
-    ebaySearch(resDani.searchtext, function(data) {
+    ebaySearch(ebayText, function(data) {
         // console.log(data);
         res.jsonp(data);
     });
@@ -111,60 +114,64 @@ app.post('/api/items/google', function(req, res) {
              //res.jsonp(data);
          });
      }*/
+    /*
+        Search.getResultsFromGoogle(searchtext, 5, function(data) {
+            push.connect('TEST1', function() {
+                data.forEach(function(item) {
+                    var obj = {};
+                    obj.Url = item;
+                    obj.Price = price;
+                    obj.Token = guid;
+                    push.write(JSON.stringify(obj));
 
-    Search.getResultsFromGoogle(searchtext, 5, function(data) {
-        console.log('getResultsFromGoogle');
-        console.log(data);
-        push.connect('TEST1', function() {
-            data.forEach(function(item) {
-                var obj = {};
-                obj.Url = item;
-                obj.Price = price;
-                obj.Token = guid;
-                push.write(JSON.stringify(obj));
-
-                fs.appendFile("TextSearchLink.txt", item + '\n', function(err) {
-                    if (err) return console.log(err);
-                    // console.log(result + ' >' + fileName);
+                    fs.appendFile("TextSearchLink.txt", item + '\n', function(err) {
+                         if (err) return console.log(err);
+                         // console.log(result + ' >' + fileName);
+                     });
                 });
             });
         });
-
-
-    });
-
+    */
     //goot image search 
+    /*
+        GoogleImageSearch.GetAllUrls(imgUrl, null, function(data) {
+            // console.log('GetAllUrls');
+            //console.log(data);
 
-    GoogleImageSearch.GetAllUrls(imgUrl, null, function(data) {
-        // console.log('GetAllUrls');
-        //console.log(data);
+            pushImg.connect('TEST1', function() {
 
-        pushImg.connect('TEST1', function() {
+                data.forEach(function(item) {
+                    var obj = {};
+                    obj.Url = item;
+                    obj.Price = price;
+                    obj.Token = guid;
+                    pushImg.write(JSON.stringify(obj));
 
-            data.forEach(function(item) {
-                var obj = {};
-                obj.Url = item;
-                obj.Price = price;
-                obj.Token = guid;
-                pushImg.write(JSON.stringify(obj));
-
-                 fs.appendFile("ImgSearchLink.txt", item + '\n', function(err) {
-                    if (err) return console.log(err);
-                    // console.log(result + ' >' + fileName);
+                    fs.appendFile("ImgSearchLink.txt", item + '\n', function(err) {
+                        if (err) return console.log(err);
+                        // console.log(result + ' >' + fileName);
+                    });
                 });
+
+
             });
+        });*/
 
-
-        });
-    });
 });
 
 function publishToSocket(obj) {
 
     var domain = url.parse(obj.Url).host;
 
-    socketGlobal.forEach(function(entry) {
-        entry.emit('chat message', [{
+    if (typeof socketGlobal[obj.Token] != 'undefined') {
+
+        var socket = socketGlobal[obj.Token];
+
+        // console.log(socketGlobal);
+        // console.log('obj.Token - ' + obj.Token);
+        //console.log('socketGlobal[obj.Token] - ' + socket);
+
+        socket.emit('chat message', [{
             Name: domain,
             ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
             ItemUrl: obj.Url,
@@ -172,8 +179,11 @@ function publishToSocket(obj) {
             Avg: obj.predictMinPrice,
             isSellSite: obj.isSellSite
         }]);
-        console.log('send to socket');
-    });
+
+        //console.log('send to socket with guid - ' + obj.Token);
+    } else {
+        console.log(obj.Token + 'is not my GUID !!!');
+    }
 }
 
 
@@ -183,8 +193,8 @@ function pullMessages() {
 
     pull.on('data', function T(data) {
         var inMsg = JSON.parse(data);
-        console.log('@@@@@@@@@@@@@@@@@@@@@');
-        console.log(inMsg);
+        //console.log('@@@@@@@@@@@@@@@@@@@@@');
+        //console.log(inMsg);
 
         publishToSocket(inMsg);
         //console.log(JSON.stringify(data));
@@ -234,12 +244,15 @@ function googleSearch1(searchtext, start, cb) {
         fields: "items/link"
     }, function(error, response) {
 
-        console.log(response);
+       //console.log(response);
         return cb(response);
     });
 }
 
 function ebaySearch(searchtext, cb) {
+
+    console.log('ebaySearch(' + searchtext + ')');
+
     var myResult = [];
     var params = {
         'OPERATION-NAME': 'findItemsByKeywords',
@@ -250,27 +263,29 @@ function ebaySearch(searchtext, cb) {
         if (err) throw err
 
 
-        var items = data.findItemsByKeywordsResponse[0].searchResult[0].item;
+        console.log(data.findItemsByKeywordsResponse[0].ack[0] === 'Success');
+        if (data.findItemsByKeywordsResponse[0].ack[0] === 'Success') {
 
+            var items = data.findItemsByKeywordsResponse[0].searchResult[0].item;
+            var curItem;
 
-        var curItem;
+            items.forEach(function(entity) {
+                curItem = {};
 
-        items.forEach(function(entity) {
-            curItem = {};
+                curItem.ItemUrl = entity.viewItemURL[0];
+                curItem.ImageUrl = entity.galleryURL[0];
+                curItem.ItemPrice = entity.sellingStatus[0].currentPrice[0].__value__;
+                // curItem.ShippingPrice = "0";
+                if (entity.shippingInfo[0].shippingServiceCost == undefined)
+                    curItem.ShippingPrice = "0.0";
+                else
+                    curItem.ShippingPrice = entity.shippingInfo[0].shippingServiceCost[0].__value__;
+                curItem.Name = entity.title[0];
+                curItem.Source = "eBay";
 
-            curItem.ItemUrl = entity.viewItemURL[0];
-            curItem.ImageUrl = entity.galleryURL[0];
-            curItem.ItemPrice = entity.sellingStatus[0].currentPrice[0].__value__;
-            // curItem.ShippingPrice = "0";
-            if (entity.shippingInfo[0].shippingServiceCost == undefined)
-                curItem.ShippingPrice = "0.0";
-            else
-                curItem.ShippingPrice = entity.shippingInfo[0].shippingServiceCost[0].__value__;
-            curItem.Name = entity.title[0];
-            curItem.Source = "eBay";
-
-            myResult.push(curItem);
-        });
+                myResult.push(curItem);
+            });
+        }
 
         return cb(myResult);
     });
@@ -284,7 +299,7 @@ app.get('/getebay', function(req, res) {
     //res.jsonp(ebaySearch('iphone',null));
 
     ebaySearch('iphone', function(data) {
-        console.log(data);
+       // console.log(data);
         res.jsonp(data);
     });
 
@@ -310,12 +325,79 @@ app.get('/endpoint', function(req, res) {
 
 
 io.on('connection', function(socket) {
-    socketGlobal.push(socket);
+    //  socketGlobal.push(socket);
     console.log('user connected - socket saved - ' + socket);
 
     socket.on('disconnect', function(socket) {
-        socketGlobal.pop(socket);
-        console.log('user disconnected - socket removed.');
+        //   socketGlobal.pop(socket);
+        // console.log(socketGlobal);
+        //console.log(socket);
+
+        // var index = socketGlobal.indexOf(socket);
+        //console.log('b4 - ' + index);
+        //socketGlobal.splice(index, 1);
+
+        // var index = socketGlobal.indexOf(socket);
+        // console.log('after - ' + index);
+
+        console.log('there is a sockect who wants to disconnect ... ');
+
+        // TODO:  fix this is not working !!
+        // We cant find valuse in array so easly...
+
+        /*console.log(socketGlobal.length);
+
+
+        var count = 0;
+        socketGlobal.forEach(function(entry) {
+            count++;
+
+
+            if (entry === socket) {
+                console.log('user disconnected - socket removed.');
+            } else {
+                console.log('did not find socket.');
+            }
+        });*/
+
+    });
+
+
+    socket.on('newSearch', function(mySearch) {
+
+        if (mySearch.txt === undefined) {} else {
+            console.log('old GUIDD was - ' + mySearch.guid);
+            console.log(Object.keys(socketGlobal).length);
+            //  socketGlobal.pop(mySearch.guid);
+           // delete socketGlobal[mySearch.guid];
+            console.log(Object.keys(socketGlobal).length);
+            console.log(Object.keys(socketGlobal));
+
+            // console.log('mySearch: ' + mySearch);
+            var myGUID = guid.raw();
+            socketGlobal[myGUID] = socket;
+
+
+            console.log('New myGUID = ' + myGUID);
+            // console.log(socketGlobal);
+            //console.log(socketGlobal.length);
+
+            Search.getResultsFromGoogle(mySearch.txt, 5, function(data) {
+                push.connect('TEST1', function() {
+                    data.forEach(function(item) {
+                        var obj = {};
+
+                        obj.Url = item;
+                        obj.Price = mySearch.price;
+                        obj.Token = myGUID;
+                        push.write(JSON.stringify(obj));
+                    });
+                });
+            });
+
+            // send the user the new guid to remove it on next search .. 
+            socket.emit('updateGuid', myGUID);
+        }
     });
 
 });
@@ -335,6 +417,12 @@ app.get('/emit', function(req, res) {
     });
 
     res.end('emit to clients - ' + socketGlobal.length);
+});
+
+app.get('/status', function(req, res) {
+    res.jsonp(Object.values(socketGlobal));
+    console.log(Object.keys(socketGlobal));
+    //res.end();
 });
 
 server.listen(3000, function() {

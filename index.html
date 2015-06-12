@@ -2,39 +2,31 @@
 <html data-ng-app="AngularAuthApp" lang="en">
 
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>JODOS - Shopping Expirience</title>
-
     <!-- Bootstrap Core CSS -->
     <link href="content/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Custom CSS -->
     <link href="content/css/agency.css" rel="stylesheet">
-
     <!-- Custom Fonts -->
     <link href="content/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href='https://fonts.googleapis.com/css?family=Kaushan+Script' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Droid+Serif:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Slab:400,100,300,700' rel='stylesheet' type='text/css'>
-
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
 </head>
 
 <body id="page-top" class="index" ng-controller="homeController">
-
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
@@ -48,7 +40,6 @@
                 </button>
                 <a class="navbar-brand page-scroll" href="#page-top">JODOS</a>
             </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
@@ -76,65 +67,59 @@
         </div>
         <!-- /.container-fluid -->
     </nav>
-
     <!-- Header -->
     <header>
         <div class="container">
             <div class="intro-text">
                 <div class="row">
-                    <input type="text" class="form-control" placeholder="Search a product on JODOS" id="searchbar" style="margin-top:140px" ng-model="searchtext" >
+                    <input type="text" class="form-control" placeholder="Search a product on JODOS" id="searchbar" style="margin-top:140px" ng-model="searchtext">
                 </div>
                 <a href="#results" class="page-scroll btn btn-xl" style="margin-top:40px" ng-click="searchApi()">Search your product</a>
             </div>
         </div>
     </header>
-
     <!-- Search Section -->
-        <section id="results" >
-
+    <section id="results">
         <div class="container">
-        <div class="row">
+            <div class="row">
                 <div class="col-lg-12 text-center">
                     <img src="./img/titels/results.png" style="height: 200px;width: 800px;">
                 </div>
-        </div>
-     <!-- start header here-->
-        <div id="fdw-pricing-table">
-                <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testFun.length>0) && isSearchedApiEnabled">
-                <h1>Searching products</h1>
-                <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
-                </div>   
-            <div class="plan plan1" data-ng-repeat="item in testFun">
-            <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
-                <div class="header" style="width: 180px;height: 180px;padding:20px;margin:1px">{{ item.Name }}</div>
-                <div class="price">{{ item.ItemPrice }}$</div>
-                <ul>
-                    <a href="{{ item.ItemUrl }}">
-                    <img src="{{ item.ImageUrl }}"  width="150" height="150" />      
-                    </a>
-                </ul>
-                <a class="signup page-scroll" href="" ng-click="searchProduct(item.Name,item.ItemPrice,item.ImageUrl,item.ItemUrl)">JODOS it!</a>            
             </div>
-            
-           
-        </div>
+            <!-- start header here-->
+            <div id="fdw-pricing-table">
+                <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testFun.length>0) && isSearchedApiEnabled">
+                    <h1>Searching products</h1>
+                    <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
+                </div>
+                <div class="plan plan1" data-ng-repeat="item in testFun">
+                    <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
+                    <div class="header" style="width: 180px;height: 180px;padding:20px;margin:1px">{{ item.Name }}</div>
+                    <div class="price">{{ item.ItemPrice }}$</div>
+                    <ul>
+                        <a href="{{ item.ItemUrl }}">
+                            <img src="{{ item.ImageUrl }}" width="150" height="150" />
+                        </a>
+                    </ul>
+                    <a class="signup page-scroll" href="" ng-click="searchProduct(item.Name,item.ItemPrice,item.ImageUrl,item.ItemUrl)">JODOS it!</a>
+                </div>
+            </div>
         </div>
     </section>
-
     <!-- Portfolio Grid Section -->
-    <section name="compare" id="compare" class="bg-light-gray" >
+    <section name="compare" id="compare" class="bg-light-gray">
         <div class="container">
-        <!--the product to compare-->
+            <!--the product to compare-->
             <div class="row" ng-show="CurrentProduct.ImageUrl">
                 <table>
                     <tr>
                         <td>
-                            <img src="{{CurrentProduct.ImageUrl}}" href="{{CurrentProduct.ItemUrl}}" width="150" height="150" >
+                            <img src="{{CurrentProduct.ImageUrl}}" href="{{CurrentProduct.ItemUrl}}" width="150" height="150">
                         </td>
                         <td>
-                               <div class="col-lg-12 text-center">
-                    <img src="./img/titels/compare.png" style="height: 200px;width: 800px;">
-                </div>
+                            <div class="col-lg-12 text-center">
+                                <img src="./img/titels/compare.png" style="height: 200px;width: 800px;">
+                            </div>
                             <h3 class="text-muted">{{CurrentProduct.ItemName}}</h3>
                             <h4 style="font-size:30px">{{CurrentProduct.ItemPrice}}$</h4>
                         </td>
@@ -145,20 +130,19 @@
             <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testKoko.length>0) && isGoogleApiEnabled">
                 <h1>Loading the asowmnes!</h1>
                 <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
-                </div>   
-
+            </div>
             <div class="row">
-            <br/>
+                <br/>
                 <table>
                     <tr data-ng-repeat="item in testKoko | orderBy:'Avg'">
                         <!--Cheeper or more expansive-->
                         <td>
-                            <img  ng-if="item.Avg < CurrentProduct.ItemPrice" src="./img/searchresult/goodJodos.jpg" width="100" height="100" >
-                            <img  ng-if="item.Avg >= CurrentProduct.ItemPrice" src="./img/searchresult/badJodos.jpg" width="100" height="100" >
+                            <img ng-if="item.Avg < CurrentProduct.ItemPrice" src="./img/searchresult/goodJodos.jpg" width="100" height="100">
+                            <img ng-if="item.Avg >= CurrentProduct.ItemPrice" src="./img/searchresult/badJodos.jpg" width="100" height="100">
                         </td>
                         <td>
-                        <a href="{{ item.ItemUrl }}">
-                            <h3 style="font-size:20px">{{ item.Name }} + {{ item.isSellSite }}</h3>
+                            <a href="{{ item.ItemUrl }}">
+                                <h3 style="font-size:20px">{{ item.Name }} + {{ item.isSellSite }}</h3>
                             </a>
                             <h4 style="font-size:15px">{{ item.ItemPrice }}$</h4>
                         </td>
@@ -167,7 +151,6 @@
             </div>
         </div>
     </section>
-
     <!-- About Section -->
     <section id="about">
         <div class="container">
@@ -192,7 +175,6 @@
                                 <div class="timeline-body">
                                     <p class="text-muted">We all met at programming course in computer professional school of the IDF. It took us 6 month to finish study and Begin serving in the C4I Corps and Air Force, where we have gained knowledge and experience </p>
                                 </div>
-
                             </div>
                         </li>
                         <li class="timeline-inverted">
@@ -249,7 +231,6 @@
             </div>
         </div>
     </section>
-
     <!-- Team Section -->
     <section id="team" class="bg-light-gray">
         <div class="container">
@@ -290,8 +271,8 @@
                         </ul>
                     </div>
                 </div>
-            <!-- </div> -->
-            <!-- <div class="row"> -->
+                <!-- </div> -->
+                <!-- <div class="row"> -->
                 <div class="col-sm-4">
                     <div class="team-member">
                         <img src="img/team/3.jpg" class="img-responsive img-circle" alt="">
@@ -313,35 +294,33 @@
                         <h4>Sinay Harel David Pur</h4>
                         <p class="text-muted">25, Israel</p>
                         <ul class="list-inline social-buttons">
-                            <li><a  href="#"><i class="fa fa-twitter"></i></a>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a>
                             </li>
                             <li><a target="_blank" href="https://www.facebook.com/sinayh"><i class="fa fa-facebook"></i></a>
                             </li>
-                            <li><a  href="#"><i class="fa fa-linkedin"></i></a>
+                            <li><a href="#"><i class="fa fa-linkedin"></i></a>
                             </li>
                         </ul>
                     </div>
                 </div>
-            <!-- </div> -->
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 text-center">
-                    <p class="large text-muted">This is our final project in our first degree</p>
+                <!-- </div> -->
+                <div class="row">
+                    <div class="col-lg-8 col-lg-offset-2 text-center">
+                        <p class="large text-muted">This is our final project in our first degree</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <a target="_blank" href="http://www.colman.ac.il/english/Pages/default.aspx">
+                        <img src="img/logos/College-of-Management.jpg" class="img-responsive img-centered" alt="">
+                    </a>
                 </div>
             </div>
-            <div class="row">
-                <a target="_blank" href="http://www.colman.ac.il/english/Pages/default.aspx">
-                    <img src="img/logos/College-of-Management.jpg" class="img-responsive img-centered" alt="">
-                </a>
-            </div>
-        </div>
     </section>
     <!-- Clients Aside -->
     <aside class="clients">
         <div class="container">
-
         </div>
     </aside>
-    
     <!-- Contact Section -->
     <section id="contact">
         <div class="container">
@@ -386,7 +365,6 @@
             </div>
         </div>
     </section>
-
     <footer>
         <div class="container">
             <div class="row">
@@ -414,10 +392,8 @@
             </div>
         </div>
     </footer>
-
     <!-- Portfolio Modals -->
     <!-- Use the modals below to showcase details about your portfolio projects! -->
-
     <!-- Portfolio Modal 1 -->
     <div class="portfolio-modal modal fade" id="portfolioModal1" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
@@ -450,7 +426,6 @@
             </div>
         </div>
     </div>
-
     <!-- Portfolio Modal 2 -->
     <div class="portfolio-modal modal fade" id="portfolioModal2" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
@@ -476,7 +451,6 @@
             </div>
         </div>
     </div>
-
     <!-- Portfolio Modal 3 -->
     <div class="portfolio-modal modal fade" id="portfolioModal3" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
@@ -503,7 +477,6 @@
             </div>
         </div>
     </div>
-
     <!-- Portfolio Modal 4 -->
     <div class="portfolio-modal modal fade" id="portfolioModal4" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
@@ -530,7 +503,6 @@
             </div>
         </div>
     </div>
-
     <!-- Portfolio Modal 5 -->
     <div class="portfolio-modal modal fade" id="portfolioModal5" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
@@ -557,7 +529,6 @@
             </div>
         </div>
     </div>
-
     <!-- Portfolio Modal 6 -->
     <div class="portfolio-modal modal fade" id="portfolioModal6" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-content">
@@ -584,33 +555,25 @@
             </div>
         </div>
     </div>
-
     <!-- jQuery -->
     <script src="scripts/jquery.js"></script>
-
     <!-- Bootstrap Core JavaScript -->
     <script src="scripts/bootstrap.min.js"></script>
-
     <!-- Plugin JavaScript -->
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js"></script>
     <script src="scripts/classie.js"></script>
     <script src="scripts/cbpAnimatedHeader.js"></script>
-
     <!-- Contact Form JavaScript -->
     <script src="scripts/jqBootstrapValidation.js"></script>
     <script src="scripts/contact_me.js"></script>
-
     <!-- Custom Theme JavaScript -->
     <script src="scripts/agency.js"></script>
-    
     <!-- 3rd party libraries -->
-
     <script src="scripts/angular.min.js"></script>
     <script src="scripts/angular-route.min.js"></script>
     <script src="scripts/angular-local-storage.min.js"></script>
     <script src="scripts/angular-cookies.js"></script>
     <script src="scripts/loading-bar.min.js"></script>
-
     <script src="scripts/moment-with-locales.js"></script>
     <script src="scripts/raphael.min.js"></script>
     <script src="scripts/morris.min.js"></script>
@@ -621,7 +584,6 @@
     <!-- Load directives -->
     <script src="app/directives/datetimepicker.js"></script>
     <script src="app/directives/focusMe.js"></script>
-
     <!-- Load services -->
     <script src="app/services/authInterceptorService.js"></script>
     <script src="app/services/authService.js"></script>
@@ -633,7 +595,6 @@
     <script src="app/controllers/homeController.js"></script>
     <script src="app/controllers/usersController.js"></script>
     <script src="app/controllers/displayController.js"></script>
-
 </body>
 
 </html>
