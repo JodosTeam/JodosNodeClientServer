@@ -9,7 +9,7 @@ var path = require('path');
 var guid = require('guid');
 var Ebay = require('ebay');
 var url = require('url');
-var context = require('rabbit.js').createContext('amqp://localhost');
+var context = require('rabbit.js').createContext('amqp://10.0.0.6');
 //var context = require('rabbit.js').createContext('amqp://yncidqyc:JH4x2YLUR_vyn4Y1CP2P6GyCHlvi96r8@owl.rmq.cloudamqp.com/yncidqyc');
 
 var push = context.socket('PUSH');
@@ -121,7 +121,7 @@ app.post('/api/items/google', function(req, res) {
                 obj.Token = guid;
                 push.write(JSON.stringify(obj));
 
-                fs.appendFile("SiteList1.txt", item + '\n', function(err) {
+                fs.appendFile("TextSearchLink.txt", item + '\n', function(err) {
                     if (err) return console.log(err);
                     // console.log(result + ' >' + fileName);
                 });
@@ -145,6 +145,11 @@ app.post('/api/items/google', function(req, res) {
                 obj.Price = price;
                 obj.Token = guid;
                 pushImg.write(JSON.stringify(obj));
+
+                 fs.appendFile("ImgSearchLink.txt", item + '\n', function(err) {
+                    if (err) return console.log(err);
+                    // console.log(result + ' >' + fileName);
+                });
             });
 
 

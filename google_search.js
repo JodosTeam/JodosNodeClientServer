@@ -22,8 +22,8 @@ function getPageFromGoogle(searchtext, start, cb) {
         query: {
             key: key,
             cx: cx,
-            start: 0,
-            num: 10,
+            start: start,
+            num: key,
             q: searchtext
         }
     });
