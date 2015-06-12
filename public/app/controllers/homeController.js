@@ -1,5 +1,5 @@
 ﻿  'use strict';
-  app.controller('homeController', ['$scope', '$location','$http', '$templateCache', 'authService','$rootScope','$cookies', function ($scope, $location,$http ,$templateCache,authService,$rootScope,$cookies) {
+  app.controller('homeController', ['$scope', '$location','$http', '$templateCache', 'authService','$rootScope','$cookies','$anchorScroll', function ($scope, $location,$http ,$templateCache,authService,$rootScope,$cookies,$anchorScroll) {
 
 
       $scope.searchtext = 'nexus';
@@ -28,13 +28,13 @@
       $scope.init();
 
               $scope.searchApi = function () {
+                $scope.testFun = [];
             $scope.isSearchedApiEnabled = true;
           authService.searchApi($scope.searchtext,$cookies.JodosGuid).then(function (results) {
 
               //$rootScope.testRoot = results.data;
               $scope.testFun = results.data;
    
-              $scope.$apply()
           },
            function (err) {
                $scope.message = err.error_description;
@@ -56,6 +56,8 @@
       });
 
         $scope.searchProduct = function(txt,price,imgUrl,itemUrl){
+        $location.hash('compare');
+        $anchorScroll();
         $scope.testKoko = [];
         $scope.isGoogleApiEnabled = true;
         $scope.CurrentProduct.ItemName = txt;

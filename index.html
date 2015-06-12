@@ -90,7 +90,7 @@
     </header>
 
     <!-- Search Section -->
-        <section id="results">
+        <section id="results" >
 
         <div class="container">
         <div class="row">
@@ -101,10 +101,9 @@
      <!-- start header here-->
         <div id="fdw-pricing-table">
                 <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testFun.length>0) && isSearchedApiEnabled">
-                <h1>מבצע השוואת מחירים</h1>
+                <h1>Searching products</h1>
                 <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
                 </div>   
-                <a class="signup page-scroll" href="#compare" >JODOS it!</a>  
             <div class="plan plan1" data-ng-repeat="item in testFun">
             <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
                 <div class="header">{{ item.Name }}</div>
@@ -114,7 +113,7 @@
                     <img src="{{ item.ImageUrl }}"  width="150" height="150" />      
                     </a>
                 </ul>
-                <a class="signup page-scroll" href="#compare" ng-click="searchProduct(item.Name,item.ItemPrice,item.ImageUrl,item.ItemUrl)">JODOS it!</a>            
+                <a class="signup page-scroll" href="" ng-click="searchProduct(item.Name,item.ItemPrice,item.ImageUrl,item.ItemUrl)">JODOS it!</a>            
             </div>
             
            
@@ -123,7 +122,7 @@
     </section>
 
     <!-- Portfolio Grid Section -->
-    <section name="compare" id="compare" class="bg-light-gray">
+    <section name="compare" id="compare" class="bg-light-gray" >
         <div class="container">
         <!--the product to compare-->
             <div class="row" ng-show="CurrentProduct.ImageUrl">
@@ -142,13 +141,14 @@
             </div>
             <!-- the other product-->
             <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testKoko.length>0) && isGoogleApiEnabled">
-                <h1>מבצע השוואת מחירים</h1>
+                <h1>Loading the asowmnes!</h1>
                 <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
                 </div>   
 
             <div class="row">
+            <br/>
                 <table>
-                    <tr data-ng-repeat="item in testKoko">
+                    <tr data-ng-repeat="item in testKoko | orderBy:'Avg'">
                         <!--Cheeper or more expansive-->
                         <td>
                             <img  ng-if="item.Avg < CurrentProduct.ItemPrice" src="./img/searchresult/goodJodos.jpg" width="100" height="100" >
@@ -156,11 +156,8 @@
                         </td>
                         <td>
                         <a href="{{ item.ItemUrl }}">
-                            <img src="{{ item.ImageUrl }}"  width="100" height="100" >
+                            <h3 style="font-size:20px">{{ item.Name }} + {{ item.isSellSite }}</h3>
                             </a>
-                        </td>
-                        <td>
-                            <h3 style="font-size:20px">{{ item.Name }}</h3>
                             <h4 style="font-size:15px">{{ item.ItemPrice }}$</h4>
                         </td>
                     </tr>

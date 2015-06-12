@@ -170,7 +170,7 @@ function publishToSocket(obj) {
             ItemUrl: obj.Url,
             ItemPrice: obj.predictMinPrice + " - " + obj.predictMaxPrice,
             Avg: obj.predictMinPrice,
-            IsSellSite: obj.IsSellSite
+            isSellSite: obj.isSellSite
         }]);
         console.log('send to socket');
     });
