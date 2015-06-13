@@ -318,6 +318,7 @@ io.on('connection', function(socket) {
 
             if (mySearch.imgUrl != "noimg.jpg") {
                 GoogleImageSearch.GetAllUrls(mySearch.imgUrl, null, function(data1) {
+                console.log('data1 ' , data1);
 
                     pushImg.connect('TEST1', function() {
                         data1.forEach(function(item) {
@@ -326,9 +327,10 @@ io.on('connection', function(socket) {
                             obj.Url = item;
                             obj.Price = mySearch.price;
                             obj.Token = myGUID;
+                            console.log('obj ' , obj);
                             //obj.Engine = 'GoogleImageSearch';
 
-                            pushImg.write(JSON.stringify(obj1));
+                            pushImg.write(JSON.stringify(obj));
                         });
                     });
                 });

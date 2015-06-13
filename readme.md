@@ -19,3 +19,11 @@ add project from repos:
 - ConsoleWrap 
 - DocBlockr
 - Comment-Snippets for Sublime Text
+
+
+TODO:
+
+- no results ??? no error
+- and tell the users
+- array of sockets .. need to clean it
+- PARSER  goes out when TIMEOUT
