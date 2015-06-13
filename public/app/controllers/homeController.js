@@ -89,24 +89,18 @@
       socket.on('updateGuid', function(guid) {
 
           $cookies.JodosGuid = guid;
-          console.log(guid);
+          //console.log(guid);
 
           //  $scope.$apply();
       });
 
-
-
-
-
       $(document).keypress(function(e) {
           if (e.which == 13) {
-              //alert($("#searchbar")[0].searchtext);
-              // console.log($("#searchbar")[0].value);
-              //$("#searchbtn").click();
-              // console.log($("#searchbtn"));
               $scope.searchApi();
+              $scope.isGoogleApiEnabled = true;
+              $location.hash('results');
+              $anchorScroll();
           }
       });
-
 
   }]);
