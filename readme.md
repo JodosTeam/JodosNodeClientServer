@@ -25,7 +25,7 @@ TODO:
 
 - when no results -> say it
 - PARSER goes out when TIMEOUT
-- search  auto comlete 
+- search  auto comlete  (use this - http://google.com/complete/search?callback=JSON_CALLBACK&output=firefox&q=)
 - work with db
 - open link in frame
 - set to engine sorce in req, make statistic

@@ -78,7 +78,7 @@ function getPageFromGoogle(searchtext, start, cb) {
     });
 }
 
-  
+
 exports.getResultsFromGoogle = function(searchtext, numOfPages, cb) {
     var count = 0;
     var arr = [];
