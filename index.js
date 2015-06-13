@@ -73,7 +73,7 @@ app.post('/api/items', function(req, res) {
     res.header('Content-type', 'application/json');
     res.header('Charset', 'utf8');
 
-    console.log('SearchTExt - ' + ebayText);
+    // console.log('SearchTExt - ' + ebayText);
 
     ebaySearch(ebayText, function(data) {
         // console.log(data);
@@ -83,79 +83,6 @@ app.post('/api/items', function(req, res) {
 });
 
 app.post('/api/items/google', function(req, res) {
-
-    var searchtext = req.body.searchtext;
-    var imgUrl = req.body.imgUrl;
-    var price = req.body.Price;
-    var guid = req.body.Guid;
-    //console.log('text:' + searchtext + ' price:' + price + 'imgUrl: ' + imgUrl + ' Guid: ' + guid);
-
-
-    var numOfPages = 4;
-    //var allUrls = [];
-    //var count = 0;
-
-    /* for (var i = 0; i < numOfPages; i++) {
-         googleSearch1(searchtext, i * 10, function(data) {
-             //console.log(data);
-
-             res.header('Content-type', 'application/json');
-             res.header('Charset', 'utf8');
-
-             push.connect('TEST4', function() {
-                 data.items.forEach(function(item) {
-                     var obj = {};
-                     obj.Url = item.link;
-                     obj.Price = price;
-                     obj.Token = guid;
-                     push.write(JSON.stringify(obj));
-                 });
-             });
-             //res.jsonp(data);
-         });
-     }*/
-    /*
-        Search.getResultsFromGoogle(searchtext, 5, function(data) {
-            push.connect('TEST1', function() {
-                data.forEach(function(item) {
-                    var obj = {};
-                    obj.Url = item;
-                    obj.Price = price;
-                    obj.Token = guid;
-                    push.write(JSON.stringify(obj));
-
-                    fs.appendFile("TextSearchLink.txt", item + '\n', function(err) {
-                         if (err) return console.log(err);
-                         // console.log(result + ' >' + fileName);
-                     });
-                });
-            });
-        });
-    */
-    //goot image search 
-    /*
-        GoogleImageSearch.GetAllUrls(imgUrl, null, function(data) {
-            // console.log('GetAllUrls');
-            //console.log(data);
-
-            pushImg.connect('TEST1', function() {
-
-                data.forEach(function(item) {
-                    var obj = {};
-                    obj.Url = item;
-                    obj.Price = price;
-                    obj.Token = guid;
-                    pushImg.write(JSON.stringify(obj));
-
-                    fs.appendFile("ImgSearchLink.txt", item + '\n', function(err) {
-                        if (err) return console.log(err);
-                        // console.log(result + ' >' + fileName);
-                    });
-                });
-
-
-            });
-        });*/
 
 });
 
@@ -167,13 +94,8 @@ function publishToSocket(obj) {
 
         var socket = socketGlobal[obj.Token];
 
-        // console.log(socketGlobal);
-        // console.log('obj.Token - ' + obj.Token);
-        //console.log('socketGlobal[obj.Token] - ' + socket);
-
         socket.emit('chat message', [{
             Name: domain,
-            // ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
             ItemUrl: obj.Url,
             ItemMinPrice: obj.predictMinPrice,
             ItemMaxPrice: obj.predictMaxPrice,
@@ -252,8 +174,6 @@ function googleSearch1(searchtext, start, cb) {
 
 function ebaySearch(searchtext, cb) {
 
-    console.log('ebaySearch(' + searchtext + ')');
-
     var myResult = [];
     var params = {
         'OPERATION-NAME': 'findItemsByKeywords',
@@ -261,10 +181,9 @@ function ebaySearch(searchtext, cb) {
     }
 
     ebay.get('finding', params, function(err, data) {
-        if (err) throw err
+        if (err)
+            throw err
 
-
-        console.log(data.findItemsByKeywordsResponse[0].ack[0] === 'Success');
         if (data.findItemsByKeywordsResponse[0].ack[0] === 'Success') {
 
             var items = data.findItemsByKeywordsResponse[0].searchResult[0].item;
@@ -274,9 +193,13 @@ function ebaySearch(searchtext, cb) {
                 curItem = {};
 
                 curItem.ItemUrl = entity.viewItemURL[0];
-                curItem.ImageUrl = entity.galleryURL[0];
+                if (entity.galleryURL === undefined) {
+                    curItem.ImageUrl = "noimg.jpg"
+                } else {
+                    curItem.ImageUrl = entity.galleryURL[0];
+                }
                 curItem.ItemPrice = entity.sellingStatus[0].currentPrice[0].__value__;
-                // curItem.ShippingPrice = "0";
+
                 if (entity.shippingInfo[0].shippingServiceCost == undefined)
                     curItem.ShippingPrice = "0.0";
                 else
@@ -300,7 +223,6 @@ app.get('/getebay', function(req, res) {
     //res.jsonp(ebaySearch('iphone',null));
 
     ebaySearch('iphone', function(data) {
-        // console.log(data);
         res.jsonp(data);
     });
 
@@ -367,21 +289,16 @@ io.on('connection', function(socket) {
     socket.on('newSearch', function(mySearch) {
 
         if (mySearch.txt === undefined) {} else {
-            console.log('old GUIDD was - ' + mySearch.guid);
-            console.log(Object.keys(socketGlobal).length);
-            //  socketGlobal.pop(mySearch.guid);
-            // delete socketGlobal[mySearch.guid];
-            console.log(Object.keys(socketGlobal).length);
-            console.log(Object.keys(socketGlobal));
+            //console.log('old GUIDD was - ' + mySearch.guid);
+            //console.log(Object.keys(socketGlobal).length);
+            //console.log(Object.keys(socketGlobal).length);
+            //console.log(Object.keys(socketGlobal));
 
             // console.log('mySearch: ' + mySearch);
             var myGUID = guid.raw();
             socketGlobal[myGUID] = socket;
 
-
             console.log('New myGUID = ' + myGUID);
-            // console.log(socketGlobal);
-            //console.log(socketGlobal.length);
 
             Search.getResultsFromGoogle(mySearch.txt, 5, function(data) {
                 push.connect('TEST1', function() {
@@ -391,10 +308,31 @@ io.on('connection', function(socket) {
                         obj.Url = item;
                         obj.Price = mySearch.price;
                         obj.Token = myGUID;
+                       // obj.Engine = 'GoogleSearch';
+
                         push.write(JSON.stringify(obj));
                     });
                 });
             });
+
+
+            if (mySearch.imgUrl != "noimg.jpg") {
+                GoogleImageSearch.GetAllUrls(mySearch.imgUrl, null, function(data1) {
+
+                    pushImg.connect('TEST1', function() {
+                        data1.forEach(function(item) {
+                            var obj = {};
+
+                            obj.Url = item;
+                            obj.Price = mySearch.price;
+                            obj.Token = myGUID;
+                            //obj.Engine = 'GoogleImageSearch';
+
+                            pushImg.write(JSON.stringify(obj1));
+                        });
+                    });
+                });
+            }
 
             // send the user the new guid to remove it on next search .. 
             socket.emit('updateGuid', myGUID);

@@ -98,13 +98,15 @@
 
 
 
-    $(document).keypress(function(e) {
-        if (e.which == 13) {
-            //alert($("#searchbar")[0].searchtext);
-            console.log($("#searchbar")[0].value);
-            $scope.searchApi();
-        }
-    });
- 
+      $(document).keypress(function(e) {
+          if (e.which == 13) {
+              //alert($("#searchbar")[0].searchtext);
+              // console.log($("#searchbar")[0].value);
+              //$("#searchbtn").click();
+              // console.log($("#searchbtn"));
+              $scope.searchApi();
+          }
+      });
+
 
   }]);

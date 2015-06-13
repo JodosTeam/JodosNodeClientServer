@@ -16,3 +16,6 @@ https://packagecontrol.io/Package%20Control.sublime-package
 add project from repos:
 - SublimeGit
 - HTML-CSS-JS Prettify
+- ConsoleWrap 
+- DocBlockr
+- Comment-Snippets for Sublime Text
