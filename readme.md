@@ -18,12 +18,14 @@ add project from repos:
 - HTML-CSS-JS Prettify
 - ConsoleWrap 
 - DocBlockr
-- Comment-Snippets for Sublime Text
+- Comment-Snippets
 
 
 TODO:
 
-- no results ??? no error
 - and tell the users
-- array of sockets .. need to clean it
 - PARSER  goes out when TIMEOUT
+- when no results -> say it
+- open link in frame
+- set to engine sorce in req, make statistic
+- array of sockets .. need to clean it
