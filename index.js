@@ -105,28 +105,24 @@ function publishToSocket(obj) {
 
         //console.log('send to socket with guid - ' + obj.Token);
     } else {
-        console.log(obj.Token + 'is not my GUID !!!');
+
+        console.log(obj.Token, 'no guid in socketGlobal array');
     }
 }
 
 
 function pullMessages() {
-    console.log('in the pullMessages');
+
     pull.connect('FinalOUT');
 
     pull.on('data', function T(data) {
         var inMsg = JSON.parse(data);
-        //console.log('@@@@@@@@@@@@@@@@@@@@@');
-        //console.log(inMsg);
 
         publishToSocket(inMsg);
-        //console.log(JSON.stringify(data));
     });
-
 }
 
 pullMessages();
-
 
 function googleSearch22(searchtext, cb) {
 
@@ -142,13 +138,10 @@ function googleSearch22(searchtext, cb) {
             num: 10,
             fields: "items/link"
         }, function(error, response) {
-            // console.log(response.items);
-
 
             count++;
             response.items.forEach(function(entity) {
                 allUrls.push(entity.link);
-                //  console.log('count=' + count + ' - ' + allUrls.length + '# - ' + entity.link);
             });
 
             if (count == numOfPages) {
@@ -167,7 +160,6 @@ function googleSearch1(searchtext, start, cb) {
         fields: "items/link"
     }, function(error, response) {
 
-        //console.log(response);
         return cb(response);
     });
 }
@@ -194,7 +186,7 @@ function ebaySearch(searchtext, cb) {
 
                 curItem.ItemUrl = entity.viewItemURL[0];
                 if (entity.galleryURL === undefined) {
-                    curItem.ImageUrl = "noimg.jpg"
+                    curItem.ImageUrl = './img/searchresult/no_image.jpg';
                 } else {
                     curItem.ImageUrl = entity.galleryURL[0];
                 }
@@ -248,41 +240,10 @@ app.get('/endpoint', function(req, res) {
 
 
 io.on('connection', function(socket) {
-    //  socketGlobal.push(socket);
-    console.log('user connected - socket saved - ' + socket);
+    console.log('new user connected');
 
     socket.on('disconnect', function(socket) {
-        //   socketGlobal.pop(socket);
-        // console.log(socketGlobal);
-        //console.log(socket);
-
-        // var index = socketGlobal.indexOf(socket);
-        //console.log('b4 - ' + index);
-        //socketGlobal.splice(index, 1);
-
-        // var index = socketGlobal.indexOf(socket);
-        // console.log('after - ' + index);
-
-        console.log('there is a sockect who wants to disconnect ... ');
-
-        // TODO:  fix this is not working !!
-        // We cant find valuse in array so easly...
-
-        /*console.log(socketGlobal.length);
-
-
-        var count = 0;
-        socketGlobal.forEach(function(entry) {
-            count++;
-
-
-            if (entry === socket) {
-                console.log('user disconnected - socket removed.');
-            } else {
-                console.log('did not find socket.');
-            }
-        });*/
-
+        console.log('user socket disconnect');
     });
 
 
@@ -298,7 +259,7 @@ io.on('connection', function(socket) {
             var myGUID = guid.raw();
             socketGlobal[myGUID] = socket;
 
-            console.log('New myGUID = ' + myGUID);
+            //console.log('New search - new myGUID = ' + myGUID);
 
             Search.getResultsFromGoogle(mySearch.txt, 5, function(data) {
                 push.connect('TEST1', function() {
@@ -308,7 +269,7 @@ io.on('connection', function(socket) {
                         obj.Url = item;
                         obj.Price = mySearch.price;
                         obj.Token = myGUID;
-                       // obj.Engine = 'GoogleSearch';
+                        // obj.Engine = 'GoogleSearch';
 
                         push.write(JSON.stringify(obj));
                     });
@@ -316,9 +277,8 @@ io.on('connection', function(socket) {
             });
 
 
-            if (mySearch.imgUrl != "noimg.jpg") {
+            if (mySearch.imgUrl != "./img/searchresult/no_image.jpg") {
                 GoogleImageSearch.GetAllUrls(mySearch.imgUrl, null, function(data1) {
-                console.log('data1 ' , data1);
 
                     pushImg.connect('TEST1', function() {
                         data1.forEach(function(item) {
@@ -327,7 +287,6 @@ io.on('connection', function(socket) {
                             obj.Url = item;
                             obj.Price = mySearch.price;
                             obj.Token = myGUID;
-                            console.log('obj ' , obj);
                             //obj.Engine = 'GoogleImageSearch';
 
                             pushImg.write(JSON.stringify(obj));

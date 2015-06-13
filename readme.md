@@ -23,9 +23,10 @@ add project from repos:
 
 TODO:
 
-- and tell the users
-- PARSER  goes out when TIMEOUT
 - when no results -> say it
+- PARSER goes out when TIMEOUT
+- search  auto comlete 
+- work with db
 - open link in frame
 - set to engine sorce in req, make statistic
 - array of sockets .. need to clean it
