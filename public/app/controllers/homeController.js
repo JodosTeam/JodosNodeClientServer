@@ -24,6 +24,7 @@
 
           authService.getUserFace().then(function(results) {
               $scope.user = results.data.user;
+              console.log(results.data.user);
           });
 
           authService.getFavorites().then(function(results) {
@@ -111,7 +112,6 @@
           authService.saveToFavorite(txt, price, itemUrl, desc).then(function(results) {
 
               authService.getFavorites().then(function(results) {
-
                   $scope.Favorites = results.data;
                   $scope.$apply();
               });

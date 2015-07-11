@@ -46,8 +46,8 @@ var favorite = require('./favorite');
   console.log(err);
 });*/
 
-var FACEBOOK_APP_ID = "855929681108893"
-var FACEBOOK_APP_SECRET = "6cfb0b86b713ad134a7af729e871aba3";
+var FACEBOOK_APP_ID = "965716803449159"; //"855929681108893"
+var FACEBOOK_APP_SECRET = "89eefbbb5531bf775356847efb4126ba"; //"6cfb0b86b713ad134a7af729e871aba3";
 
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/Final');
@@ -129,8 +129,8 @@ app.get('/auth/facebook/callback',
         failureRedirect: '/login'
     }),
     function(req, res) {
-        console.log("login secsusfuly!");
-        console.log(req.user);
+        console.log("login successfully!");
+        //console.log(req.user);
         res.redirect('/');
     });
 
@@ -149,7 +149,7 @@ app.get('/search=:id', function(req, res) {
 app.post('/api/items/guid', function(req, res) {
     //res.sendFile(__dirname + '/index1.html');
     var myGUID = guid.raw();
-    console.log('genrate new guid - ' + myGUID);
+   // console.log('genrate new guid - ' + myGUID);
 
     res.end(myGUID);
 
@@ -213,8 +213,6 @@ app.post('/api/favorite/add', function(req, res) {
             res.json({});
         });
     }
-
-
 });
 
 app.post('/api/favorite/update', function(req, res) {
@@ -222,7 +220,7 @@ app.post('/api/favorite/update', function(req, res) {
 
     var id = req.body.id;
     var description = req.body.desc;
-    console.log(id + " " + description);
+    //console.log(id + " " + description);
     favorite.update({
         _id: id
     }, {
@@ -378,7 +376,7 @@ function googleSearch1(searchtext, start, cb) {
 
 function ebaySearch(searchtext, res, cb) {
 
-    console.log('ebaySearch(' + searchtext + ')');
+    //console.log('ebaySearch(' + searchtext + ')');
 
     var myResult = [];
     var params = {
@@ -393,7 +391,7 @@ function ebaySearch(searchtext, res, cb) {
         }
 
 
-        console.log(data.findItemsByKeywordsResponse[0].ack[0] === 'Success');
+        //console.log(data.findItemsByKeywordsResponse[0].ack[0] === 'Success');
         if (data.findItemsByKeywordsResponse[0].ack[0] === 'Success') {
 
             var items = data.findItemsByKeywordsResponse[0].searchResult[0].item;

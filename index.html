@@ -62,7 +62,7 @@
                         <a class="page-scroll" href="#contact">Contact</a>
                     </li>
                     <li>
-                        <a ng-show="user != undefined" class="page-scroll" href="#favorite">My Favorite</a>
+                        <a ng-show="user != undefined" class="page-scroll" href="#favorite">My Favorites</a>
                     </li>
                     <li>
                         <a ng-if="user == undefined" href="/auth/facebook"><img src="./img/login-with-facebook.png" width="154" height="22"></a>
@@ -104,11 +104,11 @@
                     <img src="http://upload.wikimedia.org/wikipedia/commons/f/f3/AnimatedStop.gif" style="width:100px;height:100px" />
                 </div>
                 <div class="plan plan1" data-ng-repeat="item in testFun">
-                    <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
+                    <!-- Static></!-->
                     <div class="header" style="width: 180px;height: 180px;padding:20px;margin:1px">{{ item.Name }}</div>
                     <div class="price">{{ item.ItemPrice }}$ </div>
                     <ul>
-                        <a href="{{ item.ItemUrl }}">
+                        <a href="{{ item.ItemUrl }}" target="_blank">
                             <img src="{{ item.ImageUrl }}" width="150" height="150" />
                         </a>
                     </ul>
@@ -370,7 +370,7 @@
                     </tr>
                     <tr data-ng-repeat="item in Favorites">
                         <td>{{ item.name }}</td>
-                        <td>{{ item.price }}</td>
+                        <td>{{ item.price }}$</td>
                         <td><a href="{{ item.ItemUrl }}">קישור</a></td>
                         <td>
                             <input type="text" value="{{ item.Desc }}" ng-model="item.Desc">
