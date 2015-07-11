@@ -106,7 +106,7 @@
                 <div class="plan plan1" data-ng-repeat="item in testFun">
                     <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
                     <div class="header" style="width: 180px;height: 180px;padding:20px;margin:1px">{{ item.Name }}</div>
-                    <div class="price">{{ item.ItemPrice }}$</div>
+                    <div class="price">{{ item.ItemPrice }}$ </div>
                     <ul>
                         <a href="{{ item.ItemUrl }}">
                             <img src="{{ item.ImageUrl }}" width="150" height="150" />
@@ -114,19 +114,19 @@
                     </ul>
                     <a class="signup page-scroll" href="" ng-click="searchProduct(item.Name,item.ItemPrice,item.ImageUrl,item.ItemUrl)">JODOS it!</a>
                     <button popover-template="dynamicPopover.templateUrl"><img src="./img/icons/fav.png" width="35" height="35" /></button>
-                        <script type="text/ng-template" id="myPopoverTemplate.html">
-                            <div>{{dynamicPopover.content}}</div>
-                            <div class="form-group">
-                                <textarea ng-model="item.description" class="form-control" />
-                                <a class="signup page-scroll" href="" ng-click="saveToFavorite(item.Name,item.ItemPrice,item.ItemUrl,item.description)">save</a>
-                            </div>
-                        </script>
+                    <script type="text/ng-template" id="myPopoverTemplate.html">
+                        <div>{{dynamicPopover.content}}</div>
+                        <div class="form-group">
+                            <textarea ng-model="item.description" class="form-control" />
+                            <a class="signup page-scroll" href="" ng-click="saveToFavorite(item.Name,item.ItemPrice,item.ItemUrl,item.description)">save</a>
+                        </div>
+                    </script>
                 </div>
             </div>
         </div>
     </section>
     <!-- Portfolio Grid Section -->
-    <section name="compare" id="compare" >
+    <section name="compare" id="compare">
         <div class="container">
             <!--the product to compare-->
             <div class="row" ng-show="CurrentProduct.ImageUrl">
@@ -147,7 +147,7 @@
             </div>
             <!-- the other product-->
             <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testKoko.length>0) && isGoogleApiEnabled">
-                <h1>Loading the asowmnes!</h1>
+                <h1>Loading the awesomeness! xD</h1>
                 <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
             </div>
             <div class="row">
@@ -163,19 +163,18 @@
                             <a href="{{ item.ItemUrl }}" target="_blank">
                                 <h3 style="font-size:20px">{{ item.Name }}</h3>
                             </a>
-                            <h4 style="font-size:15px">{{ item.ItemPrice }}$</h4>
+                            <h4 ng-if="item.ItemMaxPrice == item.ItemMinPrice" style="font-size:15px">{{ item.ItemMinPrice }}$</h4>
+                            <h4 ng-if="item.ItemMaxPrice != item.ItemMinPrice" style="font-size:15px">{{ item.ItemMinPrice }}$ - {{ item.ItemMaxPrice }}$</h4>
                         </td>
                         <td>
-                            
-                                  <button popover-template="dynamicPopover.templateUrl"><img src="./img/icons/fav.png" width="35" height="35" /></button>
-                        <script type="text/ng-template" id="myPopoverTemplate.html">
-                            <div>{{dynamicPopover.content}}</div>
-                            <div class="form-group">
-                                <textarea ng-model="item.description" class="form-control" />
-                                <a class="signup page-scroll" href="" ng-click="saveToFavorite(item.Name + ' : '+ CurrentProduct.ItemName,item.Avg,item.ItemUrl,item.description)">save</a>
-                            </div>
-                        </script>
-
+                            <button popover-template="dynamicPopover.templateUrl"><img src="./img/icons/fav.png" width="35" height="35" /></button>
+                            <script type="text/ng-template" id="myPopoverTemplate.html">
+                                <div>{{dynamicPopover.content}}</div>
+                                <div class="form-group">
+                                    <textarea ng-model="item.description" class="form-control" />
+                                    <a class="signup page-scroll" href="" ng-click="saveToFavorite(item.Name + ' : '+ CurrentProduct.ItemName,item.Avg,item.ItemUrl,item.description)">save</a>
+                                </div>
+                            </script>
                         </td>
                     </tr>
                 </table>
@@ -353,7 +352,6 @@
         <div class="container">
         </div>
     </aside>
-    <!-- Contact Section -->
     <section id="favorite">
         <div class="container">
             <div class="row">
@@ -399,6 +397,7 @@
                     </tr>
                 </table>
     </section>
+    <!-- Contact Section -->
     <section id="contact">
         <div class="container">
             <div class="row">
@@ -664,6 +663,7 @@
     <script src="scripts/morris.min.js"></script>
     <script src="scripts/socket.io-1.2.0.js"></script>
     <script src="scripts/massautocomplete.js"></script>
+    <script src="scripts/jquery.facebook.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js"></script>
     <!-- Load app main script -->
     <script src="app/app.js"></script>
@@ -681,7 +681,6 @@
     <script src="app/controllers/homeController.js"></script>
     <script src="app/controllers/usersController.js"></script>
     <script src="app/controllers/displayController.js"></script>
-    <script type="text/javascript" src="scripts/jquery.facebook.js"></script>
 </body>
 
 </html>

@@ -169,7 +169,7 @@ app.post('/api/items', function(req, res) {
     res.header('Content-type', 'application/json');
     res.header('Charset', 'utf8');
 
-    console.log('SearchTExt - ' + ebayText);
+    //console.log('SearchTExt - ' + ebayText);
 
     ebaySearch(ebayText, res, function(data) {
         res.jsonp(data);
@@ -297,22 +297,19 @@ function publishToSocket(obj) {
 
         var socket = socketGlobal[obj.Token];
 
-        // console.log(socketGlobal);
-        // console.log('obj.Token - ' + obj.Token);
-        //console.log('socketGlobal[obj.Token] - ' + socket);
-
         socket.emit('chat message', [{
             Name: domain,
-            ImageUrl: 'http://st1.foodsd.co.il/Images/Products/large/hagiSJ2GI3.jpg',
             ItemUrl: obj.Url,
-            ItemPrice: obj.predictMinPrice + " - " + obj.predictMaxPrice,
+            ItemMinPrice: obj.predictMinPrice,
+            ItemMaxPrice: obj.predictMaxPrice,
             Avg: obj.predictMinPrice,
             isSellSite: obj.isSellSite
         }]);
 
         //console.log('send to socket with guid - ' + obj.Token);
     } else {
-        console.log(obj.Token + 'is not my GUID !!!');
+
+        console.log(obj.Token, 'no guid in socketGlobal array');
     }
 }
 
@@ -564,9 +561,10 @@ app.get('/emit', function(req, res) {
 });
 
 app.get('/status', function(req, res) {
-    res.jsonp(Object.values(socketGlobal));
+    /*res.jsonp(Object.values(socketGlobal));
     console.log(Object.keys(socketGlobal));
-    //res.end();
+    res.end();
+    */
 });
 
 server.listen(3000, function() {

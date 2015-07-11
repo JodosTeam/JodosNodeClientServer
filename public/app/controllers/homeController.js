@@ -55,6 +55,7 @@
 
                   //$rootScope.testRoot = results.data;
                   $scope.testFun = results.data;
+                  console.log($scope.testFun);
 
               },
               function(err) {
@@ -117,14 +118,11 @@
               //$rootScope.testRoot = results.data;
               //$location.path('/display');  
           });
-
-
       };
 
       $scope.UpdateDesc = function(id, desc) {
           authService.updateFavorite(id, desc).then(function() {
               //TODO::delete from favirotes
-
           });
 
       }
@@ -138,15 +136,49 @@
               });
 
           });
-
-
       };
 
       socket.on('updateGuid', function(guid) {
-
           $cookies.JodosGuid = guid;
-          console.log(guid);
-
-          //  $scope.$apply();
       });
+
+      $(document).keypress(function(e) {
+          if (e.which == 13) {
+              $scope.searchApi();
+              $scope.isGoogleApiEnabled = true;
+              $location.hash('results');
+              $anchorScroll();
+          }
+      });
+
+      $(function() {
+          var availableTags = [
+              "ActionScript",
+              "AppleScript",
+              "Asp",
+              "BASIC",
+              "C",
+              "C++",
+              "Clojure",
+              "COBOL",
+              "ColdFusion",
+              "Erlang",
+              "Fortran",
+              "Groovy",
+              "Haskell",
+              "Java",
+              "JavaScript",
+              "Lisp",
+              "Perl",
+              "PHP",
+              "Python",
+              "Ruby",
+              "Scala",
+              "Scheme"
+          ];
+          $("#searchbar").autocomplete({
+              source: availableTags
+          });
+      });
+
   }]);
