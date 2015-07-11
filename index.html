@@ -61,6 +61,13 @@
                     <li>
                         <a class="page-scroll" href="#contact">Contact</a>
                     </li>
+                    <li>
+                        <a ng-show="user != undefined" class="page-scroll" href="#favorite">My Favorite</a>
+                    </li>
+                    <li>
+                        <a ng-if="user == undefined" href="/auth/facebook"><img src="./img/login-with-facebook.png" width="154" height="22"></a>
+                        <a style="font-weight: bold" ng-if="user != undefined" target="_blank" href="{{user.profileUrl}}">Hiii {{user.displayName}}</a>
+                    </li>
                 </ul>
             </div>
             <!-- /.navbar-collapse -->
@@ -88,9 +95,13 @@
             </div>
             <!-- start header here-->
             <div id="fdw-pricing-table">
-                <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testFun.length>0) && isSearchedApiEnabled">
+                <div class="col-md-6 col-md-offset-3" style="margin-top:30px;" align="center" ng-show="!(testFun.length>0) && isSearchedApiEnabled && message==''">
                     <h1>Searching products</h1>
                     <img src="http://www.mytreedb.com/uploads/mytreedb/loader/ajax_loader_blue_350.gif" style="width:80px" />
+                </div>
+                <div class="col-md-8 col-md-offset-2" style="margin-top:30px;" align="center" ng-show="message!=''">
+                    <h1>Sorry , Error has occurred </h1>
+                    <img src="http://upload.wikimedia.org/wikipedia/commons/f/f3/AnimatedStop.gif" style="width:100px;height:100px" />
                 </div>
                 <div class="plan plan1" data-ng-repeat="item in testFun">
                     <!-- Static cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc></!-->
@@ -102,12 +113,20 @@
                         </a>
                     </ul>
                     <a class="signup page-scroll" href="" ng-click="searchProduct(item.Name,item.ItemPrice,item.ImageUrl,item.ItemUrl)">JODOS it!</a>
+                    <button popover-template="dynamicPopover.templateUrl"><img src="./img/icons/fav.png" width="35" height="35" /></button>
+                        <script type="text/ng-template" id="myPopoverTemplate.html">
+                            <div>{{dynamicPopover.content}}</div>
+                            <div class="form-group">
+                                <textarea ng-model="item.description" class="form-control" />
+                                <a class="signup page-scroll" href="" ng-click="saveToFavorite(item.Name,item.ItemPrice,item.ItemUrl,item.description)">save</a>
+                            </div>
+                        </script>
                 </div>
             </div>
         </div>
     </section>
     <!-- Portfolio Grid Section -->
-    <section name="compare" id="compare" class="bg-light-gray">
+    <section name="compare" id="compare" >
         <div class="container">
             <!--the product to compare-->
             <div class="row" ng-show="CurrentProduct.ImageUrl">
@@ -133,7 +152,7 @@
             </div>
             <div class="row">
                 <br/>
-                <table>
+                <table id="fdw-pricing-table">
                     <tr data-ng-repeat="item in testKoko | orderBy:'Avg'">
                         <!--Cheeper or more expansive-->
                         <td>
@@ -141,10 +160,22 @@
                             <img ng-if="item.Avg >= CurrentProduct.ItemPrice" src="./img/searchresult/badJodos.jpg" width="100" height="100">
                         </td>
                         <td>
-                            <a href="{{ item.ItemUrl }}">
-                                <h3 style="font-size:20px">{{ item.Name }} + {{ item.isSellSite }}</h3>
+                            <a href="{{ item.ItemUrl }}" target="_blank">
+                                <h3 style="font-size:20px">{{ item.Name }}</h3>
                             </a>
                             <h4 style="font-size:15px">{{ item.ItemPrice }}$</h4>
+                        </td>
+                        <td>
+                            
+                                  <button popover-template="dynamicPopover.templateUrl"><img src="./img/icons/fav.png" width="35" height="35" /></button>
+                        <script type="text/ng-template" id="myPopoverTemplate.html">
+                            <div>{{dynamicPopover.content}}</div>
+                            <div class="form-group">
+                                <textarea ng-model="item.description" class="form-control" />
+                                <a class="signup page-scroll" href="" ng-click="saveToFavorite(item.Name + ' : '+ CurrentProduct.ItemName,item.Avg,item.ItemUrl,item.description)">save</a>
+                            </div>
+                        </script>
+
                         </td>
                     </tr>
                 </table>
@@ -173,7 +204,7 @@
                                     <h4 class="subheading">Our Humble Beginnings</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">We all met at programming course in computer professional school of the IDF. It took us 6 month to finish study and Begin serving in the C4I Corps and Air Force, where we have gained knowledge and experience </p>
+                                    <p id="radius-left" class="text-muted">We all met at programming course in computer professional school of the IDF. It took us 6 month to finish study and Begin serving in the C4I Corps and Air Force, where we have gained knowledge and experience </p>
                                 </div>
                             </div>
                         </li>
@@ -187,7 +218,7 @@
                                     <h4 class="subheading">Collage Of Management</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">Linear, calculus, discrete... We all worked hard during our study for First Degree in Computer Science's school, College of Management in Rishon Letzion.</p>
+                                    <p id="radius-right" class="text-muted">Linear, calculus, discrete... We all worked hard during our study for First Degree in Computer Science's school, College of Management in Rishon Letzion.</p>
                                 </div>
                             </div>
                         </li>
@@ -201,7 +232,7 @@
                                     <h4 class="subheading">Funjoya, Eilat</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">A naive traveling to the traditional israeli students event for non naive goals, gave birth to the idea in our heads. Why everytime we want to buy a product on the net we have to spent a lot of time to find what is the most worthwhile product?</p>
+                                    <p id="radius-left" class="text-muted">A naive traveling to the traditional israeli students event for non naive goals, gave birth to the idea in our heads. Why everytime we want to buy a product on the net we have to spent a lot of time to find what is the most worthwhile product?</p>
                                 </div>
                             </div>
                         </li>
@@ -215,7 +246,7 @@
                                     <h4 class="subheading">Phase Two Expansion</h4>
                                 </div>
                                 <div class="timeline-body">
-                                    <p class="text-muted">We create a system that offers you to purchase products on the net in a reliable, fastest and most relevant way to your search. No more tires compares, here you get all the options in one interfece right for you.</p>
+                                    <p id="radius-right" class="text-muted">We create a system that offers you to purchase products on the net in a reliable, fastest and most relevant way to your search. No more tires compares, here you get all the options in one interfece right for you.</p>
                                 </div>
                             </div>
                         </li>
@@ -306,9 +337,10 @@
                 <!-- </div> -->
                 <div class="row">
                     <div class="col-lg-8 col-lg-offset-2 text-center">
-                        <p class="large text-muted">This is our final project in our first degree</p>
+                        <p class="large text-muted">Our moto in life:</p>
                     </div>
                 </div>
+                <iframe style="margin-left:25%" width="560" height="315" src="https://www.youtube.com/embed/OszF4drxGmU" frameborder="0" allowfullscreen></iframe>
                 <div class="row">
                     <a target="_blank" href="http://www.colman.ac.il/english/Pages/default.aspx">
                         <img src="img/logos/College-of-Management.jpg" class="img-responsive img-centered" alt="">
@@ -322,6 +354,51 @@
         </div>
     </aside>
     <!-- Contact Section -->
+    <section id="favorite">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 text-center">
+                    <h2 class="section-heading">Favorites</h2>
+                    <h3 class="section-subheading text-muted">The products you saved:</h3>
+                </div>
+                <table border="1px">
+                    <tr>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Link</th>
+                        <th>Description</th>
+                        <th>Delete</th>
+                        <th>Update</th>
+                    </tr>
+                    <tr data-ng-repeat="item in Favorites">
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.price }}</td>
+                        <td><a href="{{ item.ItemUrl }}">קישור</a></td>
+                        <td>
+                            <input type="text" value="{{ item.Desc }}" ng-model="item.Desc">
+                        </td>
+                        <td>
+                            <button ng-click="DeleteFavo(item._id)"><img src=".\img\icons\delete.png" width="40" height="40"></button>
+                        </td>
+                        <td>
+                            <button ng-click="UpdateDesc(item._id,item.Desc)"><img src=".\img\icons\edit.ico" width="40" height="40"></button>
+                        </td>
+                    </tr>
+                </table>
+                <br/>
+                <h1 align="center">
+        Counts</h1>
+                <table border="1px">
+                    <tr>
+                        <th>ID</th>
+                        <th>Count</th>
+                    </tr>
+                    <tr data-ng-repeat="item in Groups">
+                        <td>{{ item._id }}</td>
+                        <td>{{ item.total_favorites }}</td>
+                    </tr>
+                </table>
+    </section>
     <section id="contact">
         <div class="container">
             <div class="row">
@@ -392,6 +469,14 @@
             </div>
         </div>
     </footer>
+    <section id="terms">
+        <div class="container">
+            <h2>Terms</h2>
+            <div class="newspaper">
+                THE LEGAL AGREEMENTS SET OUT BELOW GOVERN YOUR USE OF THE ITUNES STORE, MAC APP STORE, APP STORE, AND IBOOKS STORE SERVICES ("SERVICES"). TO AGREE TO THESE TERMS, CLICK "AGREE." IF YOU DO NOT AGREE TO THESE TERMS, DO NOT CLICK "AGREE," AND DO NOT USE THE SERVICES. A. ITUNES STORE, MAC APP STORE, APP STORE, AND IBOOKS STORE TERMS OF SALE PAYMENTS, TAXES, AND REFUND POLICY You agree that you will pay for all products you purchase through the Services, and that Apple may charge your payment method for any products purchased and for any additional amounts (including any taxes and late fees, as applicable) that may be accrued by or in connection with your Account. YOU ARE RESPONSIBLE FOR THE TIMELY PAYMENT OF ALL FEES AND FOR PROVIDING APPLE WITH A VALID PAYMENT METHOD FOR PAYMENT OF ALL FEES. For details of how purchases are billed please visit http://support.apple.com/kb/HT5582. Your total price will include the price of the product plus any applicable sales tax; such sales tax is based on the bill-to address and the sales tax rate in effect at the time you download the product. We will charge tax only in states where digital goods are taxable. All sales and rentals of products are final. Prices for products offered via the Services may change at any time, and the Services do not provide price protection or refunds in the event of a price reduction or promotional offering. If a product becomes unavailable following a transaction but prior to download, your sole remedy is a refund. If technical problems prevent or unreasonably delay delivery of your product, your exclusive and sole remedy is either replacement or refund of the price paid, as determined by Apple. 1-Click® 1-Click is a registered service mark of Amazon.com, Inc., used under license. 1-Click is a convenient feature that allows you to make a purchase from the Services with a single click of your mouse or other input device. When accessing the Services on your computer, 1-Click purchasing may be activated via the dialog that appears when you click a Buy button. (You may reset this selection at any time by clicking Reset Warnings in your Account information). When accessing the Services on your Apple-branded products running iOS such as an iPad, iPod touch, or iPhone (“iOS Device”), 1-Click is activated for each transaction by tapping the button showing the price of the product, which reveals the Buy button. When 1-Click is activated, clicking or tapping the Buy button starts the download immediately and completes your transaction without any further steps. GIFT CERTIFICATES, ITUNES CARDS AND CODES, ALLOWANCES, AND CONTENT CODES Gift Certificates, iTunes Cards and Codes, and Allowances are issued and managed by Apple Value Services, LLC (“Issuer”). Gift Certificates, iTunes Cards and Codes, Content Codes, and Allowances, in addition to unused balances, are not redeemable for cash and cannot be returned for a cash refund (except as required by law); exchanged; resold; used to purchase Gifts, Gift Certificates, or iTunes Cards or Codes; used to provide Allowances; used for purchases on the Apple Online Store; or used in Apple Retail Stores. Unused balances are not transferable. Gift Certificates, iTunes Cards and Codes, Content Codes, and Allowances purchased in the United States may be redeemed through the Services only in the United States, its territories, and possessions. The Gift Certificate/iTunes Card/Code cash value is 1/10 of one cent. Neither Issuer nor Apple is responsible for lost or stolen Gift Certificates, iTunes Cards or Codes, Content Codes, or Allowances. Risk of loss and title for Gift Certificates, iTunes Cards and Codes, and Allowances transmitted electronically pass to the purchaser in Virginia upon electronic transmission to the recipient. Risk of loss and title for Content Codes transmitted electronically pass in California upon electronic transmission from Apple; for avoidance of doubt, such recipient may not always be you. Apple reserves the right to close accounts and request alternative forms of payment if a Gift Certificate, iTunes Card or Code, Content Code, or Allowance is fraudulently obtained or used on the Service. APPLE, ISSUER, AND THEIR LICENSEES, AFFILIATES, AND LICENSORS MAKE NO WARRANTIES, EXPRESS OR IMPLIED, WITH RESPECT TO GIFT CERTIFICATES, ITUNES CARDS OR CODES, CONTENT CODES, ALLOWANCES, OR THE ITUNES STORE, APP STORE, MAC APP STORE, OR IBOOKS STORE, INCLUDING, WITHOUT LIMITATION, ANY EXPRESS OR IMPLIED WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. IN THE EVENT THAT A GIFT CERTIFICATE, ITUNES CARD OR CODE, CONTENT CODE, OR ALLOWANCE IS NONFUNCTIONAL, YOUR SOLE REMEDY, AND OUR SOLE LIABILITY, SHALL BE THE REPLACEMENT OF SUCH GIFT CERTIFICATE, ITUNES CARD OR CODE, CONTENT CODE, OR ALLOWANCE. THESE LIMITATIONS MAY NOT APPLY TO YOU. CERTAIN STATE LAWS DO NOT ALLOW LIMITATIONS ON IMPLIED WARRANTIES OR THE EXCLUSION OR LIMITATION OF CERTAIN DAMAGES. IF THESE LAWS APPLY TO YOU, SOME OR ALL OF THE ABOVE DISCLAIMERS, EXCLUSIONS, OR LIMITATIONS MAY NOT APPLY TO YOU, AND YOU MAY ALSO HAVE ADDITIONAL RIGHTS. GIFTS Gifts purchased from the Services may be purchased only for, and redeemed only by, persons in the United States, its territories, and possessions. Gift recipients must have compatible hardware and parental control settings to utilize some gifts. PRE-ORDERS By pre-ordering products, you are authorizing the Services to automatically charge your account and download the product when it becomes available. You may cancel your pre-order prior to the time the item becomes available. FAMILY SHARING Family Sharing allows you to share eligible iTunes, App Store, Mac App Store, and iBooks Store products with up to six members (including yourself) of a “Family.” If you set up or join a Family, you may view the eligible products of other Family members and download such products to your compatible device or computer. You can also choose to hide purchases so that other Family members will not be able to view or download them from you. You can share information such as photos and videos via the Photo app, events via your Family Calendar, reminders via the Reminders app, location information via Find My Friends, and device location via Find My iPhone. Family Sharing is for personal, non-commercial use only. iTunes and iCloud accounts are required; iOS 8 and/or OS X Yosemite are required to start and join a Family. Certain transactions and features may not be compatible with earlier software and may require a software upgrade. If you join a Family, the features of Family Sharing are enabled on your compatible devices and computers automatically. The “Organizer” of a Family can invite other members to participate in the Family. The Organizer must be 18 years or older and must have an eligible payment method registered with iTunes. If you are an Organizer, you represent that you are the parent or legal guardian of any Family member under age 13. The Organizer's payment method is used to pay for any purchase initiated by a Family member in excess of any store credit in such initiating Family member’s account. Products are associated with the account of the Family member who initiated the transaction. BY INVITING FAMILY MEMBERS TO JOIN A FAMILY, THE ORGANIZER AGREES THAT ALL FAMILY MEMBER PURCHASES ARE AUTHORIZED BY AND ARE THE RESPONSIBILITY OF THE ORGANIZER, EVEN IF THE ORGANIZER WAS UNAWARE OF ANY PARTICULAR PURCHASE, IF A FAMILY MEMBER EXCEEDED HIS OR HER AUTHORITY AS GRANTED BY THE ORGANIZER, OR IF MULTIPLE FAMILY MEMBERS PURCHASE THE SAME PRODUCT. THE ORGANIZER IS RESPONSIBLE FOR COMPLIANCE WITH ANY AGREEMENT WITH ITS PAYMENT METHOD PROVIDER, AND ASSUMES ALL RISK IN THE EVENT THAT SHARING ACCESS TO SUCH PAYMENT METHOD LIMITS ANY PROTECTION OFFERED BY THE PAYMENT METHOD PROVIDER. The Organizer can change the payment method on file at any time. A record of the purchase will be sent to the initiating Family member and the Organizer, even if the purchase is hidden by the Family member; please use Report a Problem on your receipt if you or your Family members do not recognize charges on your receipt or payment method statement. The Organizer can use the Ask to Buy function to require children under the age of 18 to obtain permission from the Organizer, and/or other adults designated by the Organizer, to download free or paid products before a purchase or download commences. Products downloaded from Family members and products acquired via redemption codes are not subject to Ask to Buy. If you are an Organizer, you represent that you and/or any adult designee is the parent or legal guardian of any Family member for whom Ask to Buy is activated. Ask to Buy is optimized for iOS 8 and OS X Yosemite; product purchase or download requests from earlier software may present users with an alternative permission process or prevent purchases altogether, and may require a software upgrade. Apple is not responsible for any harm resulting from a delay in Ask to Buy approvals or denials. The Organizer may remove any Family member from the Family, which will terminate that Family member's ability to initiate authorized purchases on the Organizer's payment method, and that Family Member’s ability to view and share other Family members' products and information. When a Family member leaves or is removed from a Family, the remaining Family members may no longer be able to view or download the departing member’s products or information, or access products previously downloaded from the departing Family member, including purchases made on the Organizer's payment method while the departing member was part of the Family. Similarly, if you leave a Family, you may no longer be able to view or download the products or information of the other Family members, and products that you downloaded from other Family members while a member of the Family may no longer be accessible. If you have made In-App Purchases from an app originally purchased by a departed Family member or downloaded from a Family member and you no longer belong to the Family, you need to purchase the app yourself and restore the In-App Purchases to regain access to them; please review the developer’s policies and the section of this Agreement entitled “In-App Purchases” before buying In-App Purchases. Because personal accounts for users under age 13 can only be created as part of Family Sharing, deleting such an account in order to remove it from the Family will terminate that Family member’s Apple ID and his or her ability to access any Apple services that require an Apple ID or any content associated with that Apple ID. You can only belong to one Family at a time, and may join any Family no more than twice per year. You can change the store account you associate with a Family no more than once every 90 days. All Family members must use the same iTunes Store country or region. Music, movies, TV shows and books can be downloaded from the iTunes Service on up to 10 devices per account, only five of which can be computers; eligible apps can be downloaded to any devices the Family member owns or controls. Not all products, including In-App Purchases, content that is not available for re-download, subscriptions, and some previously purchased apps, are eligible for Family Sharing. Apple reserves the right to disband a Family in accordance with the “Termination” section of this Agreement. ELECTRONIC CONTRACTING Your use of the Services includes the ability to enter into agreements and/or to make transactions electronically. YOU ACKNOWLEDGE THAT YOUR ELECTRONIC SUBMISSIONS CONSTITUTE YOUR AGREEMENT AND INTENT TO BE BOUND BY AND TO PAY FOR SUCH AGREEMENTS AND TRANSACTIONS. YOUR AGREEMENT AND INTENT TO BE BOUND BY ELECTRONIC SUBMISSIONS APPLIES TO ALL RECORDS RELATING TO ALL TRANSACTIONS YOU ENTER INTO ON THIS SITE, INCLUDING NOTICES OF CANCELLATION, POLICIES, CONTRACTS, AND APPLICATIONS. In order to access and retain your electronic records, you may be required to have certain hardware and software, which are your sole responsibility. Apple is not responsible for typographic errors. B. ITUNES STORE TERMS AND CONDITIONS THIS LEGAL AGREEMENT BETWEEN YOU AND APPLE INC. ("APPLE") GOVERNS YOUR USE OF THE ITUNES STORE SERVICE (THE “ITUNES SERVICE”). THE ITUNES STORE SERVICE Apple is the provider of the iTunes Service, which permits you to access, purchase or rent digital content ("iTunes Products") for end user use only under the terms and conditions set forth in this Agreement. REQUIREMENTS FOR USE OF THE ITUNES SERVICE Only persons age 13 years or older can create accounts. Accounts for persons under 13 years old can be created by a parent or legal guardian using Family Sharing or by an approved educational institution. Children under the age of majority should review this Agreement with their parent or guardian to ensure that the child and parent or legal guardian understand it. The iTunes Service is available to you only in the United States, its territories, and possessions. You agree not to use or attempt to use the iTunes Service from outside these locations. Apple may use technologies to verify your compliance. Use of the iTunes Service requires compatible devices, Internet access, and certain software (fees may apply); may require periodic updates; and may be affected by the performance of these factors. High-speed Internet access is strongly recommended for regular use and is required for video. The latest version of required software is recommended to access the iTunes Service and may be required for certain transactions or features and to download iTunes Products previously purchased or acquired from the iTunes Service. You agree that meeting these requirements, which may change from time to time, is your responsibility. The iTunes Service is not part of any other product or offering, and no purchase or obtaining of any other product shall be construed to represent or guarantee you access to the iTunes Service. YOUR ACCOUNT As a registered user of the iTunes Service, you may establish an account ("Account"). Don’t reveal your Account information to anyone else. You are solely responsible for maintaining the confidentiality and security of your Account and for all activities that occur on or through your Account, and you agree to immediately notify Apple of any security breach of your Account. Apple shall not be responsible for any losses arising out of the unauthorized use of your Account. In order to purchase and download iTunes Products from the iTunes Service, you must enter your Apple ID and password or use Touch ID to authenticate your Account for transactions. Once you have authenticated your Account using your Apple ID and password, you will not need to authenticate again for fifteen minutes on your computer or iOS Device; you can choose to allow your computer or Apple TV to remember your password to remain authenticated. During this time, you will be able to purchase and download iTunes Products without re-entering your password. You can turn off the ability to make iTunes Product transactions or change settings to require a password for every transaction by adjusting the settings on your computer, iOS Device, or Apple TV. For more information, please see http://support.apple.com/kb/HT1904 and http://support.apple.com/kb/HT4213. You agree to provide accurate and complete information when you register with, and as you use, the iTunes Service ("iTunes Registration Data"), and you agree to update your iTunes Registration Data to keep it accurate and complete. You agree that Apple may store and use the iTunes Registration Data you provide for use in maintaining and billing fees to your Account. AUTOMATIC DELIVERY AND DOWNLOADING PREVIOUS PURCHASES When you first acquire music, purchased (i.e. not rented) movie, TV show and music video iTunes Products (collectively, “iTunes Eligible Content”), you may elect to automatically receive (“auto-download”) copies of such iTunes Eligible Content on additional compatible iOS Devices (except for purchased movies and TV show iTunes Products) and iTunes-authorized computers with compatible software by associating such iOS Devices and computers subject to the association rules below (each, an “Associated Device”)For each Associated Device, you may specify which type of iTunes Eligible Content, if any, may be auto-downloaded to it. On an Associated Device that is capable of receiving push notifications (“Push-Enabled”), including iOS Devices, the iTunes Eligible Content will auto-download to that Associated Device when it has an Internet connection; on an Associated Device that is not Push-Enabled, iTunes Eligible Content will automatically appear in the download queue and you may manually initiate the download within iTunes. As an accommodation to you, subsequent to acquiring iTunes Eligible Content, you may download certain of such previously-acquired iTunes Eligible Content onto any Associated Device. Some iTunes Eligible Content that you previously acquired may not be available for subsequent download at any given time, and Apple shall have no liability to you in such event. As you may not be able to subsequently download certain previously-acquired iTunes Eligible Content, once you download an item of iTunes Eligible Content, it is your responsibility not to lose, destroy, or damage it, and you may want to back it up. Association of Associated Devices is subject to the following terms: (i) You may auto-download iTunes Eligible Content or download previously-acquired iTunes Eligible Content from an Account on up to 10 Associated Devices, provided no more than 5 are iTunes-authorized computers. (ii) An Associated Device can be associated with only one Account at any given time. (iii) You may switch an Associated Device to a different Account only once every 90 days. (iv) You may download previously-acquired free content onto an unlimited number of devices while it is free on the iTunes Service, but on no more than 5 iTunes-authorized computers. An Apple TV is not an “Associated Device.” However, TV show iTunes Products and purchased (i.e. not rented) movies iTunes Products may be played back on compatible Apple TVs, provided that you may only play back any such TV show or movie on a limited number of Apple TVs at the same time. Some pieces of iTunes Eligible Content may be large, and significant data charges may result from delivery of such iTunes Eligible Content over a data connection. ITUNES MATCH iTunes Match permits you to remotely access your matched or uploaded songs, and music videos you have purchased with your Account, along with related metadata, playlists, and other information about your iTunes Library (“iTunes Match Content”). You may subscribe to iTunes Match for an annual fee. You must have a valid credit card on file with iTunes to subscribe. The subscription is non-refundable (except as required by applicable law), and will automatically renew for one-year periods until you cancel. Your account will be charged no more than 24 hours prior to the expiration of the current subscription period. You may cancel automatic renewal by adjusting the iTunes Store account settings on your computer. You will no longer be able to access your iTunes Match Content from iTunes Match after the end of your subscription period. iTunes Match works with libraries that contain up to 25,000 songs which are either (i) not currently available on the iTunes Service, or (ii) not purchased from the iTunes Service with your Account. Songs that do not meet certain quality criteria or that are not authorized for your computer are not eligible for iTunes Match. iTunes Match will automatically scan the song files and collect other information that may be used to identify media in your iTunes library, such as the names of songs, song artists or song durations. iTunes Match will use this information to match songs to those currently available on the iTunes Store, and will make matched songs available to you in a format then available on the iTunes Store. If the song is not successfully matched, your copy of the song will be uploaded to Apple in the same format or a format determined by Apple. Apple reserves the right to limit types of content uploaded (for example, excessively large files). Matched or uploaded songs and related metadata will be available for access from an Associated Device that has been enabled for iTunes Match. Association of Associated Devices for iTunes Match is subject to the same terms as Automatic Delivery and Downloading Previous Purchases, and uploaded or matched songs and related information are deemed to be “iTunes Eligible Content.” You may also access iTunes Match Content from compatible Apple TVs, provided that you may only do so on a limited number of Apple TVs at the same time. When you use iTunes Match, Genius will begin associating information about the media in your iTunes library with your Account; the association with your Account will continue for a period of time after your subscription ends. Apple will otherwise use this information as described in the Privacy Section of this Agreement. You will not be able to disable Genius while using iTunes Match, so if you prefer that we do not collect and use information from your iTunes library in this manner, you should not use iTunes Match. You hereby agree to use iTunes Match only for lawfully acquired content. Any use for illegitimate content infringes the rights of others and may subject you to civil and criminal penalties, including possible monetary damages, for copyright infringement. iTunes Match is provided on an “AS IS” basis and may contain errors or inaccuracies that could cause failures, corruption or loss of data and/or information, including music, playlist, and play history, from your computer or device and from peripherals (including, without limitation, servers and other computers) connected thereto. You should back up all data and information on your computer or device and any peripherals prior to using iTunes Match. You expressly acknowledge and agree that all use of iTunes Match is at your sole risk. To the extent permitted by law, Apple shall have no liability with respect to your use of iTunes Match, including the inability to access matched or uploaded content. PRIVACY The iTunes Service is subject to Apple's Privacy Policy at http://www.apple.com/privacy/. When you opt in to the Genius feature, Apple will, from time to time, automatically collect information that can be used to identify media in your iTunes library on any Genius-enabled device, such as your play history and playlists. This includes media purchased or acquired through iTunes and media obtained from other sources. This information will be stored anonymously and will not be associated with your name or Account. When you use the Genius feature, Apple will use this information and the contents of your iTunes library, as well as other information, to give personalized recommendations to you. Apple may only use this information and combine it with aggregated information from the iTunes libraries of other users who also opt in to this feature, your iTunes Store purchase history data, aggregated purchase history data from other iTunes Store users, and other information obtained from third parties, to: • Create personalized playlists for you from your iTunes library. • Provide you with recommendations regarding media and other products and services that you may wish to purchase or acquire. • Provide recommendations regarding products and services to other users. At all times your information will be treated in accordance with Apple’s Privacy Policy. Once you opt in to the Genius feature, you will be able to create Genius playlists on Genius-capable devices. If you prefer that we do not collect and use information from your iTunes library in this manner, you should not enable the Genius feature. You can revoke your opt-in choice at any time by turning off the Genius feature from the Store menu in iTunes on your computer or turning off Genius in the Settings on your device. After you opt out, iTunes will no longer send information about your iTunes library to Apple. If you have elected to share your library from multiple devices, you need to turn off the Genius feature from each device. By opting in to the Genius feature, you consent to the use of your information as described above and as described in Apple’s Privacy Policy. CONTENT AVAILABILITY Apple reserves the right to change content options (including eligibility for particular features) without notice. For further information or concerns about closed captioning in specific content within the iTunes Store, please email accessibility@apple.com. You may also contact Thomas Montgomery, Accessibility Response Engineer, 1 Infinite Loop, Cupertino, California 95014, Phone/Fax: 408-783-5512. USE OF CONTENT You agree that the iTunes Service and certain iTunes Products include security technology that limits your use of iTunes Products and that, whether or not iTunes Products are limited by security technology, you shall use iTunes Products in compliance with the applicable usage rules established by Apple and its licensors (“Usage Rules”), and that any other use of the iTunes Products may constitute a copyright infringement. Any security technology is an inseparable part of the iTunes Products. Apple reserves the right to modify the Usage Rules at any time. You agree not to violate, circumvent, reverse-engineer, decompile, disassemble, or otherwise tamper with any of the security technology related to such Usage Rules for any reason—or to attempt or assist another person to do so. Usage Rules may be controlled and monitored by Apple for compliance purposes, and Apple reserves the right to enforce the Usage Rules without notice to you. You agree not to access the iTunes Service by any means other than through software that is provided by Apple for accessing the iTunes Service. You shall not access or attempt to access an Account that you are not authorized to access. You agree not to modify the software in any manner or form, or to use modified versions of the software, for any purposes including obtaining unauthorized access to the iTunes Service. Violations of system or network security may result in civil or criminal liability.
+            </div>
+        </div>
+    </section>
     <!-- Portfolio Modals -->
     <!-- Use the modals below to showcase details about your portfolio projects! -->
     <!-- Portfolio Modal 1 -->
@@ -579,6 +664,7 @@
     <script src="scripts/morris.min.js"></script>
     <script src="scripts/socket.io-1.2.0.js"></script>
     <script src="scripts/massautocomplete.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-bootstrap/0.13.0/ui-bootstrap-tpls.js"></script>
     <!-- Load app main script -->
     <script src="app/app.js"></script>
     <!-- Load directives -->
@@ -595,6 +681,7 @@
     <script src="app/controllers/homeController.js"></script>
     <script src="app/controllers/usersController.js"></script>
     <script src="app/controllers/displayController.js"></script>
+    <script type="text/javascript" src="scripts/jquery.facebook.js"></script>
 </body>
 
 </html>

@@ -5,14 +5,35 @@
       $scope.searchtext = 'nexus';
       $scope.message = '';
       $scope.test = [];
+      $scope.user = null;
       $scope.testProduct = [];
       $scope.isSearchedApiEnabled = false;
       $scope.isGoogleApiEnabled = false;
       $scope.CurrentProduct = {};
       $scope.testKoko = [];
+      $scope.Favorites = [];
+      $scope.Groups = [];
 
+      $scope.dynamicPopover = {
+          content: 'Add Description',
+          templateUrl: 'myPopoverTemplate.html',
+          description: ''
+      };
 
       $scope.init = function() {
+
+          authService.getUserFace().then(function(results) {
+              $scope.user = results.data.user;
+          });
+
+          authService.getFavorites().then(function(results) {
+              $scope.Favorites = results.data;
+          });
+
+          authService.getGroup().then(function(results) {
+              $scope.Groups = results.data;
+
+          });
 
           var MyCookie = $cookies.JodosGuid;
 
@@ -28,6 +49,7 @@
 
       $scope.searchApi = function() {
           $scope.testFun = [];
+          $scope.message = '';
           $scope.isSearchedApiEnabled = true;
           authService.searchApi($scope.searchtext, $cookies.JodosGuid).then(function(results) {
 
@@ -84,6 +106,41 @@
           socket.emit('newSearch', obj);
       };
 
+      $scope.saveToFavorite = function(txt, price, itemUrl, desc) {
+          authService.saveToFavorite(txt, price, itemUrl, desc).then(function(results) {
+
+              authService.getFavorites().then(function(results) {
+
+                  $scope.Favorites = results.data;
+                  $scope.$apply();
+              });
+              //$rootScope.testRoot = results.data;
+              //$location.path('/display');  
+          });
+
+
+      };
+
+      $scope.UpdateDesc = function(id, desc) {
+          authService.updateFavorite(id, desc).then(function() {
+              //TODO::delete from favirotes
+
+          });
+
+      }
+
+      $scope.DeleteFavo = function(id) {
+          authService.deleteFavorite(id).then(function() {
+              //TODO::delete from favirotes
+              authService.getFavorites().then(function(results) {
+                  $scope.Favorites = results.data;
+                  $scope.$apply();
+              });
+
+          });
+
+
+      };
 
       socket.on('updateGuid', function(guid) {
 

@@ -1,4 +1,12 @@
-var express = require("express");
+var express = require('express'),
+    passport = require('passport'),
+    util = require('util'),
+    FacebookStrategy = require('passport-facebook').Strategy,
+    logger = require('morgan'),
+    session = require('express-session'),
+    cookieParser = require("cookie-parser"),
+    methodOverride = require('method-override');
+
 var bodyParser = require("body-parser");
 var app = express();
 var http = require('http');
@@ -32,15 +40,103 @@ var ebay = new Ebay({
 var io = require('socket.io')(server);
 var socketGlobal = [];
 
+var favorite = require('./favorite');
+
+/*process.on('uncaughtException', function(err) {
+  console.log(err);
+});*/
+
+var FACEBOOK_APP_ID = "855929681108893"
+var FACEBOOK_APP_SECRET = "6cfb0b86b713ad134a7af729e871aba3";
+
+var mongoose = require('mongoose');
+mongoose.connect('mongodb://localhost/Final');
+
+passport.serializeUser(function(user, done) {
+    done(null, user);
+});
+
+passport.deserializeUser(function(obj, done) {
+    done(null, obj);
+});
+
+
+passport.use(new FacebookStrategy({
+        clientID: FACEBOOK_APP_ID,
+        clientSecret: FACEBOOK_APP_SECRET,
+        callbackURL: "http://localhost:3000/auth/facebook/callback"
+    },
+    function(accessToken, refreshToken, profile, done) {
+        // asynchronous verification, for effect...
+        process.nextTick(function() {
+
+            // To keep the example simple, the user's Facebook profile is returned to
+            // represent the logged-in user.  In a typical application, you would want
+            // to associate the Facebook account with a user record in your database,
+            // and return that user instead.
+
+            return done(null, profile);
+        });
+    }
+));
+
+app.use(logger());
+app.use(cookieParser());
+app.use(bodyParser());
+app.use(methodOverride());
+app.use(session({
+    secret: 'keyboard cat'
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(bodyParser.json()); // for parsing application/json
 app.use(bodyParser.urlencoded({
     extended: true
 })); // for parsing application/x-www-form-urlencoded
 
+function ensureAuthenticated(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    }
+    console.log("Not Auth!");
+}
+
+
+
+
+
+
+// GET /auth/facebook
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  The first step in Facebook authentication will involve
+//   redirecting the user to facebook.com.  After authorization, Facebook will
+//   redirect the user back to this application at /auth/facebook/callback
+app.get('/auth/facebook',
+    passport.authenticate('facebook'),
+    function(req, res) {
+        // The request will be redirected to Facebook for authentication, so this
+        // function will not be called.
+    });
+
+// GET /auth/facebook/callback
+//   Use passport.authenticate() as route middleware to authenticate the
+//   request.  If authentication fails, the user will be redirected back to the
+//   login page.  Otherwise, the primary route function function will be called,
+//   which, in this example, will redirect the user to the home page.
+app.get('/auth/facebook/callback',
+    passport.authenticate('facebook', {
+        failureRedirect: '/login'
+    }),
+    function(req, res) {
+        console.log("login secsusfuly!");
+        console.log(req.user);
+        res.redirect('/');
+    });
 
 app.get('/', function(req, res) {
     res.sendFile(__dirname + '/index.html');
+
 });
 
 app.get('/search=:id', function(req, res) {
@@ -75,12 +171,14 @@ app.post('/api/items', function(req, res) {
 
     console.log('SearchTExt - ' + ebayText);
 
-    ebaySearch(ebayText, function(data) {
-        // console.log(data);
+    ebaySearch(ebayText, res, function(data) {
         res.jsonp(data);
     });
 
 });
+
+
+
 
 app.post('/api/items/google', function(req, res) {
 
@@ -92,72 +190,104 @@ app.post('/api/items/google', function(req, res) {
 
 
     var numOfPages = 4;
-    //var allUrls = [];
-    //var count = 0;
-
-    /* for (var i = 0; i < numOfPages; i++) {
-         googleSearch1(searchtext, i * 10, function(data) {
-             //console.log(data);
-
-             res.header('Content-type', 'application/json');
-             res.header('Charset', 'utf8');
-
-             push.connect('TEST4', function() {
-                 data.items.forEach(function(item) {
-                     var obj = {};
-                     obj.Url = item.link;
-                     obj.Price = price;
-                     obj.Token = guid;
-                     push.write(JSON.stringify(obj));
-                 });
-             });
-             //res.jsonp(data);
-         });
-     }*/
-    /*
-        Search.getResultsFromGoogle(searchtext, 5, function(data) {
-            push.connect('TEST1', function() {
-                data.forEach(function(item) {
-                    var obj = {};
-                    obj.Url = item;
-                    obj.Price = price;
-                    obj.Token = guid;
-                    push.write(JSON.stringify(obj));
-
-                    fs.appendFile("TextSearchLink.txt", item + '\n', function(err) {
-                         if (err) return console.log(err);
-                         // console.log(result + ' >' + fileName);
-                     });
-                });
-            });
-        });
-    */
-    //goot image search 
-    /*
-        GoogleImageSearch.GetAllUrls(imgUrl, null, function(data) {
-            // console.log('GetAllUrls');
-            //console.log(data);
-
-            pushImg.connect('TEST1', function() {
-
-                data.forEach(function(item) {
-                    var obj = {};
-                    obj.Url = item;
-                    obj.Price = price;
-                    obj.Token = guid;
-                    pushImg.write(JSON.stringify(obj));
-
-                    fs.appendFile("ImgSearchLink.txt", item + '\n', function(err) {
-                        if (err) return console.log(err);
-                        // console.log(result + ' >' + fileName);
-                    });
-                });
-
-
-            });
-        });*/
 
 });
+
+app.post('/api/favorite/add', function(req, res) {
+
+    if (req.isAuthenticated()) {
+        var searchtext = req.body.searchtext;
+        var itmUrl = req.body.itmUrl;
+        var Currprice = req.body.Price;
+        var description = req.body.desc;
+
+        var tempFavo = new favorite({
+            name: searchtext,
+            price: Currprice,
+            ItemUrl: itmUrl,
+            Desc: description,
+            UserId: req.user.id
+        });
+
+        tempFavo.save(function(results) {
+            res.json({});
+        });
+    }
+
+
+});
+
+app.post('/api/favorite/update', function(req, res) {
+
+
+    var id = req.body.id;
+    var description = req.body.desc;
+    console.log(id + " " + description);
+    favorite.update({
+        _id: id
+    }, {
+        $set: {
+            Desc: description
+        }
+    }, function(err) {
+        console.log(err);
+    });
+
+
+
+
+});
+
+
+app.get('/api/favorite', function(req, res) {
+
+    if (req.isAuthenticated()) {
+
+        favorite.find({
+            UserId: req.user.id
+        }, function(err, results) {
+            res.json(results);
+        });
+    }
+
+
+});
+
+app.get('/api/favorite/group', function(req, res) {
+
+    if (req.isAuthenticated()) {
+
+        favorite.aggregate({
+                $group: {
+                    _id: '$UserId',
+                    total_favorites: {
+                        $sum: 1
+                    }
+                }
+            },
+            function(err, results) {
+                res.json(results);
+            }
+        );
+    }
+
+
+});
+
+app.post('/api/favorite/delete', function(req, res) {
+
+    if (req.isAuthenticated()) {
+        var id = req.body.id;
+        favorite.remove({
+            _id: id
+        }, function(err, results) {
+            res.json({});
+        });
+    }
+
+
+});
+
 
 function publishToSocket(obj) {
 
@@ -244,12 +374,12 @@ function googleSearch1(searchtext, start, cb) {
         fields: "items/link"
     }, function(error, response) {
 
-       //console.log(response);
+        //console.log(response);
         return cb(response);
     });
 }
 
-function ebaySearch(searchtext, cb) {
+function ebaySearch(searchtext, res, cb) {
 
     console.log('ebaySearch(' + searchtext + ')');
 
@@ -260,7 +390,10 @@ function ebaySearch(searchtext, cb) {
     }
 
     ebay.get('finding', params, function(err, data) {
-        if (err) throw err
+        if (err) {
+            res.status(500).send('Something broke!');
+            return;
+        }
 
 
         console.log(data.findItemsByKeywordsResponse[0].ack[0] === 'Success');
@@ -292,6 +425,17 @@ function ebaySearch(searchtext, cb) {
 }
 
 
+
+app.get('/getLoginUser', function(req, res) {
+    if (req.isAuthenticated()) {
+        res.jsonp({
+            "user": req.user
+        });
+    } else {
+        res.jsonp("");
+    }
+});
+
 app.get('/getebay', function(req, res) {
     res.header('Content-type', 'application/json');
     res.header('Charset', 'utf8');
@@ -299,7 +443,7 @@ app.get('/getebay', function(req, res) {
     //res.jsonp(ebaySearch('iphone',null));
 
     ebaySearch('iphone', function(data) {
-       // console.log(data);
+        // console.log(data);
         res.jsonp(data);
     });
 
@@ -369,7 +513,7 @@ io.on('connection', function(socket) {
             console.log('old GUIDD was - ' + mySearch.guid);
             console.log(Object.keys(socketGlobal).length);
             //  socketGlobal.pop(mySearch.guid);
-           // delete socketGlobal[mySearch.guid];
+            // delete socketGlobal[mySearch.guid];
             console.log(Object.keys(socketGlobal).length);
             console.log(Object.keys(socketGlobal));
 

@@ -27,10 +27,27 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
     };
 
     var url = 'https://www.googleapis.com/customsearch/v1?key=AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4&cx=017135603890338635452:l5ri3atpm-y&fields=items/title,items/link,items/pagemap/offer&q=';
-    
+
+    var _getUserFace = function() {
+
+        return $http.get(serviceBase + 'getLoginUser').then(function (results) {
+            return results;
+        });
+    };
+
+        var _getFavorites = function() {
+
+        
+        return $http.get(serviceBase + 'api/favorite').then(function (results) {
+            return results;
+        });
+    };
+
+
+
     var _searchApi = function(searchtext,myGUID) {
 
-        //return $http.get('https://www.googleapis.com/customsearch/v1?key=AIzaSyAwFxWoXwWNts6fyZpN3cowCb5BXoL0qT4&cx=017135603890338635452:6y5bim-ajlo&q=' + searchtext + '&fields=items/title').then(function (results) {
+       
         return $http.post(serviceBase + 'api/items',{'searchtext':searchtext,'guid': myGUID}).then(function (results) {
             return results;
         });
@@ -39,6 +56,34 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
     var _searchGoogle = function(searchtext,price,imgUrl,guid) {
 
         return $http.post(serviceBase + 'api/items/google',{'searchtext':searchtext,'Price':price,'imgUrl':imgUrl,'Guid':guid}).then(function (results) {
+            return results;
+        });
+    };
+
+    var _saveToFavorite = function(searchtext,price,itmUrl,desc) {
+
+        return $http.post(serviceBase + 'api/favorite/add',{'searchtext':searchtext,'Price':price,'itmUrl':itmUrl,'desc':desc}).then(function (results) {
+            return results;
+        });
+    };
+
+       var _updateFavorite = function(id,desc) {
+
+        return $http.post(serviceBase + 'api/favorite/update',{'id':id,'desc':desc}).then(function (results) {
+            return results;
+        });
+    };
+
+    var _deleteFavorite = function(id) {
+
+        return $http.post(serviceBase + 'api/favorite/delete',{'id':id}).then(function () {
+            
+        });
+    };
+
+       var _getGroup = function() {
+
+        return $http.get(serviceBase + 'api/favorite/group').then(function (results) {
             return results;
         });
     };
@@ -122,6 +167,13 @@ app.factory('authService', ['$http', '$q', 'localStorageService', 'ngAuthSetting
     authServiceFactory.searchApi = _searchApi;
     authServiceFactory.searchGoogle = _searchGoogle;
     authServiceFactory.getGuid = _getGuid;
+    authServiceFactory.getUserFace = _getUserFace;
+    authServiceFactory.saveToFavorite = _saveToFavorite;
+    authServiceFactory.getFavorites = _getFavorites;
+    authServiceFactory.deleteFavorite = _deleteFavorite;
+    authServiceFactory.updateFavorite = _updateFavorite;
+    authServiceFactory.getGroup = _getGroup
     
+
     return authServiceFactory;
 }]);
