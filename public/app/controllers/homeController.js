@@ -19,6 +19,11 @@
           templateUrl: 'myPopoverTemplate.html',
           description: ''
       };
+       $scope.dynamicPopover2 = {
+          content: 'Add Description',
+          templateUrl: 'myPopoverTemplate2.html',
+          description: ''
+      };
 
       $scope.init = function() {
 

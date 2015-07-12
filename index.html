@@ -167,9 +167,9 @@
                             <h4 ng-if="item.ItemMaxPrice != item.ItemMinPrice" style="font-size:15px">{{ item.ItemMinPrice }}$ - {{ item.ItemMaxPrice }}$</h4>
                         </td>
                         <td>
-                            <button popover-template="dynamicPopover.templateUrl"><img src="./img/icons/fav.png" width="35" height="35" /></button>
-                            <script type="text/ng-template" id="myPopoverTemplate.html">
-                                <div>{{dynamicPopover.content}}</div>
+                            <button popover-template="dynamicPopover2.templateUrl"><img src="./img/icons/fav.png" width="35" height="35" /></button>
+                            <script type="text/ng-template" id="myPopoverTemplate2.html">
+                                <div>{{dynamicPopover2.content}}</div>
                                 <div class="form-group">
                                     <textarea ng-model="item.description" class="form-control" />
                                     <a class="signup page-scroll" href="" ng-click="saveToFavorite(item.Name + ' : '+ CurrentProduct.ItemName,item.Avg,item.ItemUrl,item.description)">save</a>
@@ -267,7 +267,7 @@
             <div class="row">
                 <div class="col-lg-12 text-center">
                     <h2 class="section-heading">Our Amazing Team</h2>
-                    <h3 class="section-subheading text-muted">We want to thanks to our parants...</h3>
+                    <h3 class="section-subheading text-muted">We want to thanks to our parents...</h3>
                 </div>
             </div>
             <div class="row">
